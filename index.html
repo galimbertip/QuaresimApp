@@ -1,84 +1,3 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Quaresima">
-<title>Salvadanaio della Quaresima</title>
-<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --viola: #4a1a6e;
-    --viola-light: #7b3fa0;
-    --oro: #c9a227;
-    --oro-light: #e8c45a;
-    --panna: #f5efe0;
-    --panna-dark: #e8dcc8;
-    --rosso: #8b1a1a;
-    --verde-palma: #2d5a27;
-    --bg: #1a0d2e;
-    --card: #2a1a42;
-    --card-light: #3a2455;
-    --testo: #f0e6d0;
-    --testo-soft: #c4b49a;
-    --bordo: #5c3d7a;
-    --shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-  body {
-    font-family: 'Crimson Text', serif;
-    background: var(--bg);
-    color: var(--testo);
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    max-width: 430px;
-    margin: 0 auto;
-    position: relative;
-    overflow-x: hidden;
-  }
-
-  /* Background texture */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse at 20% 0%, rgba(74,26,110,0.5) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, rgba(139,26,26,0.3) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, rgba(26,13,46,0.9) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Croce decorativa sfondo */
-  body::after {
-    content: '✟';
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 60vh;
-    color: rgba(74,26,110,0.06);
-    pointer-events: none;
-    z-index: 0;
-    font-family: serif;
-  }
-
-  .app { position: relative; z-index: 1; }
-
-  /* HEADER */
-  .header {
-    background: linear-gradient(180deg, rgba(42,26,66,0.98) 0%, rgba(26,13,46,0.95) 100%);
-    border-bottom: 1px solid var(--bordo);
-    padding: 16px 20px 14px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
     backdrop-filter: blur(10px);
   }
 
@@ -753,7 +672,21 @@
     transform: translateX(-50%) translateY(0);
   }
 
-  /* SCROLLBAR */
+  .export-btn {
+    background: rgba(74,26,110,0.25);
+    border: 1px solid var(--bordo);
+    color: var(--testo-soft);
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .export-btn:active { background: rgba(74,26,110,0.4); transform: scale(0.98); }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--bordo); border-radius: 2px; }
@@ -910,6 +843,24 @@
     </div>
 
     <button class="save-btn" onclick="saveSettings()">✓ Salva Impostazioni</button>
+
+    <div class="setting-group" style="margin-top:20px;">
+      <span class="setting-label">Trasferisci dati tra dispositivi</span>
+      <button class="export-btn" onclick="exportData()">📤 Esporta dati (scarica file JSON)</button>
+      <div style="margin-top:8px;">
+        <button class="export-btn" style="background:rgba(45,90,39,0.2);border-color:#2d5a27;color:#90c878;" onclick="document.getElementById('importFile').click()">📥 Importa dati (da file JSON)</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+      <div style="margin-top:8px;">
+        <button class="export-btn" style="background:rgba(201,162,39,0.1);border-color:var(--oro);color:var(--oro-light);" onclick="showRawData()">📋 Copia dati come testo</button>
+      </div>
+      <div style="margin-top:8px;">
+        <button class="export-btn" style="background:rgba(201,162,39,0.1);border-color:var(--oro);color:var(--oro-light);" onclick="togglePasteArea()">📝 Incolla dati da testo</button>
+        <textarea id="pasteArea" placeholder="Incolla qui il testo copiato dall'altra app..." style="display:none;width:100%;margin-top:8px;background:var(--card-light);border:1px solid var(--bordo);border-radius:10px;color:var(--testo);font-size:12px;padding:10px;min-height:80px;font-family:monospace;outline:none;resize:vertical;"></textarea>
+        <button id="pasteConfirmBtn" style="display:none;margin-top:6px;width:100%;background:linear-gradient(135deg,var(--viola-light),var(--viola));border:1px solid var(--oro);color:var(--oro);font-family:'Cinzel',serif;font-size:12px;padding:12px;border-radius:10px;cursor:pointer;" onclick="pasteImport()">✓ Importa testo incollato</button>
+      </div>
+    </div>
+
     <button class="danger-btn" onclick="confirmReset()">🗑 Cancella tutti i dati</button>
   </div>
 </div>
@@ -1283,6 +1234,105 @@ function deleteDonation(id) {
 }
 
 // =====================
+// ESPORTA / IMPORTA
+// =====================
+
+function exportData() {
+  const data = {
+    version: 1,
+    exportDate: new Date().toISOString(),
+    donations: getDonations(),
+    settings: getSettings()
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `quaresima-${new Date().getFullYear()}-backup.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📤 File esportato!');
+}
+
+function showRawData() {
+  const data = {
+    version: 1,
+    exportDate: new Date().toISOString(),
+    donations: getDonations(),
+    settings: getSettings()
+  };
+  const json = JSON.stringify(data);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(json).then(() => showToast('📋 Dati copiati! Incollali nell\'altra app'));
+  } else {
+    prompt('Copia tutto questo testo:', json);
+  }
+}
+
+function togglePasteArea() {
+  const area = document.getElementById('pasteArea');
+  const btn = document.getElementById('pasteConfirmBtn');
+  const visible = area.style.display === 'block';
+  area.style.display = visible ? 'none' : 'block';
+  if (visible) btn.style.display = 'none';
+  else area.focus();
+}
+
+function pasteImport() {
+  const text = document.getElementById('pasteArea').value.trim();
+  if (!text) return;
+  try {
+    const data = JSON.parse(text);
+    if (!data.donations || !Array.isArray(data.donations)) {
+      showToast('❌ Testo non valido'); return;
+    }
+    const existing = getDonations();
+    const existingIds = new Set(existing.map(d => d.id));
+    const newDons = data.donations.filter(d => !existingIds.has(d.id));
+    saveDonations([...existing, ...newDons]);
+    if (data.settings) saveSettingsData(data.settings);
+    document.getElementById('pasteArea').value = '';
+    document.getElementById('pasteArea').style.display = 'none';
+    document.getElementById('pasteConfirmBtn').style.display = 'none';
+    renderAll();
+    closeSettings();
+    showToast(`✓ Importate ${newDons.length} offerte!`);
+  } catch {
+    showToast('❌ Errore nel testo incollato');
+  }
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.donations || !Array.isArray(data.donations)) {
+        showToast('❌ File non valido');
+        return;
+      }
+      // Unisci le donazioni senza duplicati (per id)
+      const existing = getDonations();
+      const existingIds = new Set(existing.map(d => d.id));
+      const newDons = data.donations.filter(d => !existingIds.has(d.id));
+      const merged = [...existing, ...newDons];
+      saveDonations(merged);
+      if (data.settings) saveSettingsData(data.settings);
+      renderAll();
+      closeSettings();
+      showToast(`✓ Importate ${newDons.length} offerte!`);
+    } catch {
+      showToast('❌ Errore nel file');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// =====================
 // SETTINGS
 // =====================
 
@@ -1396,6 +1446,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Aggiorna data ogni minuto
   setInterval(renderHeader, 60000);
+
+  // Listener textarea incolla
+  document.getElementById('pasteArea').addEventListener('input', function() {
+    document.getElementById('pasteConfirmBtn').style.display = this.value.trim() ? 'block' : 'none';
+  });
 });
 </script>
 </body>
