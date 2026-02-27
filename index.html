@@ -1,3 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Quaresima">
+<title>Salvadanaio della Quaresima</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --viola: #4a1a6e;
+    --viola-light: #7b3fa0;
+    --oro: #c9a227;
+    --oro-light: #e8c45a;
+    --panna: #f5efe0;
+    --panna-dark: #e8dcc8;
+    --rosso: #8b1a1a;
+    --verde-palma: #2d5a27;
+    --bg: #1a0d2e;
+    --card: #2a1a42;
+    --card-light: #3a2455;
+    --testo: #f0e6d0;
+    --testo-soft: #c4b49a;
+    --bordo: #5c3d7a;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Crimson Text', serif;
+    background: var(--bg);
+    color: var(--testo);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 0%, rgba(74,26,110,0.5) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(139,26,26,0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(26,13,46,0.9) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Croce decorativa sfondo */
+  body::after {
+    content: '✟';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 60vh;
+    color: rgba(74,26,110,0.06);
+    pointer-events: none;
+    z-index: 0;
+    font-family: serif;
+  }
+
+  .app { position: relative; z-index: 1; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(180deg, rgba(42,26,66,0.98) 0%, rgba(26,13,46,0.95) 100%);
+    border-bottom: 1px solid var(--bordo);
+    padding: 16px 20px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
     backdrop-filter: blur(10px);
   }
 
