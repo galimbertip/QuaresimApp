@@ -2,911 +2,582 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Quaresima">
-<title>Salvadanaio della Quaresima</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Salvadanaio">
+<meta name="theme-color" content="#1a0d2e">
+<title>Salvadanaio Digitale</title>
+
+<!-- PWA Icon inline SVG come favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234a1a6e'/%3E%3Cellipse cx='50' cy='62' rx='28' ry='22' fill='%23c9a227'/%3E%3Cellipse cx='50' cy='60' rx='28' ry='22' fill='%23e8c45a'/%3E%3Cellipse cx='50' cy='58' rx='28' ry='20' fill='%23c9a227'/%3E%3Crect x='44' y='36' width='12' height='6' rx='3' fill='%237b3fa0'/%3E%3Cellipse cx='50' cy='37' rx='10' ry='5' fill='%237b3fa0'/%3E%3Crect x='46' y='30' width='8' height='3' rx='1.5' fill='%23e8c45a'/%3E%3Cellipse cx='50' cy='58' rx='5' ry='2' fill='%23a07810' opacity='0.5'/%3E%3C/svg%3E">
+
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%234a1a6e'/%3E%3Cellipse cx='90' cy='112' rx='50' ry='38' fill='%23c9a227'/%3E%3Cellipse cx='90' cy='108' rx='50' ry='38' fill='%23e8c45a'/%3E%3Cellipse cx='90' cy='104' rx='50' ry='36' fill='%23c9a227'/%3E%3Crect x='80' y='66' width='20' height='10' rx='5' fill='%237b3fa0'/%3E%3Cellipse cx='90' cy='68' rx='18' ry='9' fill='%237b3fa0'/%3E%3Crect x='83' y='54' width='14' height='6' rx='3' fill='%23e8c45a'/%3E%3Cellipse cx='90' cy='104' rx='9' ry='3.5' fill='%23a07810' opacity='0.5'/%3E%3C/svg%3E">
+
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --viola: #4a1a6e;
-    --viola-light: #7b3fa0;
-    --oro: #c9a227;
-    --oro-light: #e8c45a;
-    --panna: #f5efe0;
-    --panna-dark: #e8dcc8;
-    --rosso: #8b1a1a;
-    --verde-palma: #2d5a27;
-    --bg: #1a0d2e;
-    --card: #2a1a42;
-    --card-light: #3a2455;
-    --testo: #f0e6d0;
-    --testo-soft: #c4b49a;
-    --bordo: #5c3d7a;
-    --shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-  body {
-    font-family: 'Crimson Text', serif;
-    background: var(--bg);
-    color: var(--testo);
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    max-width: 430px;
-    margin: 0 auto;
-    position: relative;
-    overflow-x: hidden;
-  }
-
-  /* Background texture */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse at 20% 0%, rgba(74,26,110,0.5) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, rgba(139,26,26,0.3) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, rgba(26,13,46,0.9) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Croce decorativa sfondo */
-  body::after {
-    content: '✟';
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 60vh;
-    color: rgba(74,26,110,0.06);
-    pointer-events: none;
-    z-index: 0;
-    font-family: serif;
-  }
-
-  .app { position: relative; z-index: 1; }
-
-  /* HEADER */
-  .header {
-    background: linear-gradient(180deg, rgba(42,26,66,0.98) 0%, rgba(26,13,46,0.95) 100%);
-    border-bottom: 1px solid var(--bordo);
-    padding: 16px 20px 14px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(10px);
-  }
-
-  .header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-
-  .header h1 {
-    font-family: 'Cinzel', serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--oro);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-  }
-
-  .header-sub {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 11px;
-    color: var(--testo-soft);
-    letter-spacing: 0.5px;
-  }
-
-  .settings-btn {
-    background: none;
-    border: 1px solid var(--bordo);
-    color: var(--testo-soft);
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-  .settings-btn:active { background: var(--card-light); transform: scale(0.95); }
-
-  /* GIORNI QUARESIMA */
-  .lent-progress {
-    padding: 16px 20px 12px;
-  }
-
-  .lent-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .lent-label {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    color: var(--testo-soft);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .lent-days {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    color: var(--oro);
-    letter-spacing: 0.5px;
-  }
-
-  .progress-bar {
-    height: 4px;
-    background: rgba(92,61,122,0.4);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--viola-light), var(--oro));
-    border-radius: 2px;
-    transition: width 0.5s ease;
-  }
-
-  /* TOTALE QUARESIMA */
-  .total-card {
-    margin: 0 16px 16px;
-    background: linear-gradient(135deg, var(--viola) 0%, #2d0d4e 100%);
-    border: 1px solid var(--bordo);
-    border-radius: 16px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-  }
-
-  .total-card::before {
-    content: '✟';
-    position: absolute;
-    right: -10px;
-    top: -10px;
-    font-size: 80px;
-    color: rgba(201,162,39,0.08);
-    font-family: serif;
-  }
-
-  .total-label {
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--oro-light);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  .total-amount {
-    font-family: 'Cinzel', serif;
-    font-size: 42px;
-    font-weight: 700;
-    color: var(--oro);
-    line-height: 1;
-    text-shadow: 0 0 30px rgba(201,162,39,0.4);
-  }
-
-  .total-amount span { font-size: 22px; margin-right: 2px; }
-
-  .total-sub {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 13px;
-    color: var(--testo-soft);
-    margin-top: 6px;
-  }
-
-  .total-stats {
-    display: flex;
-    gap: 16px;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid rgba(92,61,122,0.5);
-  }
-
-  .stat-item { flex: 1; text-align: center; }
-  .stat-val {
-    font-family: 'Cinzel', serif;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--oro-light);
-    display: block;
-  }
-  .stat-lbl {
-    font-size: 11px;
-    color: var(--testo-soft);
-    font-style: italic;
-  }
-
-  /* BOTTONI IMPORTO */
-  .section-title {
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--testo-soft);
-    text-transform: uppercase;
-    padding: 0 20px;
-    margin-bottom: 10px;
-  }
-
-  .amounts-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 0 16px;
-    margin-bottom: 16px;
-  }
-
-  .amount-btn {
-    background: var(--card);
-    border: 1.5px solid var(--bordo);
-    border-radius: 14px;
-    padding: 16px 12px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .amount-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, var(--viola-light), var(--oro));
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-
-  .amount-btn:active::before { opacity: 0.15; }
-  .amount-btn:active { transform: scale(0.96); border-color: var(--oro); }
-
-  .amount-btn.featured {
-    grid-column: 1 / -1;
-    background: linear-gradient(135deg, rgba(74,26,110,0.6), rgba(42,26,66,0.8));
-    border-color: var(--oro);
-  }
-
-  .amount-emoji { font-size: 22px; display: block; margin-bottom: 4px; position: relative; }
-  .amount-val {
-    font-family: 'Cinzel', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--oro);
-    position: relative;
-  }
-  .amount-label {
-    font-size: 11px;
-    color: var(--testo-soft);
-    font-style: italic;
-    position: relative;
-    margin-top: 2px;
-    display: block;
-  }
-
-  /* DONAZIONE OGGI */
-  .today-section {
-    padding: 0 16px;
-    margin-bottom: 20px;
-  }
-
-  .today-card {
-    background: var(--card);
-    border: 1px solid var(--bordo);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-
-  .today-header {
-    background: linear-gradient(90deg, rgba(42,26,66,0.8), rgba(26,13,46,0.8));
-    padding: 14px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--bordo);
-  }
-
-  .today-title {
-    font-family: 'Cinzel', serif;
-    font-size: 12px;
-    letter-spacing: 1px;
-    color: var(--oro-light);
-  }
-
-  .today-total {
-    font-family: 'Cinzel', serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--oro);
-  }
-
-  .donations-list { max-height: 280px; overflow-y: auto; }
-
-  .donation-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid rgba(92,61,122,0.25);
-    animation: slideIn 0.3s ease;
-  }
-
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .donation-item:last-child { border-bottom: none; }
-
-  .donation-icon {
-    width: 36px;
-    height: 36px;
-    background: rgba(74,26,110,0.4);
-    border: 1px solid var(--bordo);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    margin-right: 12px;
-    flex-shrink: 0;
-  }
-
-  .donation-info { flex: 1; }
-  .donation-time { font-size: 12px; color: var(--testo-soft); font-style: italic; }
-  .donation-note { font-size: 12px; color: var(--testo-soft); }
-
-  .donation-amount {
-    font-family: 'Cinzel', serif;
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--oro);
-  }
-
-  .delete-btn {
-    background: none;
-    border: none;
-    color: rgba(139,26,26,0.5);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 4px 8px;
-    margin-left: 8px;
-    border-radius: 6px;
-    transition: all 0.2s;
-  }
-  .delete-btn:active { color: var(--rosso); background: rgba(139,26,26,0.1); }
-
-  .empty-state {
-    text-align: center;
-    padding: 30px 20px;
-    color: var(--testo-soft);
-    font-style: italic;
-    font-size: 14px;
-  }
-
-  .empty-state .empty-icon { font-size: 36px; margin-bottom: 8px; display: block; opacity: 0.5; }
-
-  /* STORICO */
-  .history-section { padding: 0 16px; margin-bottom: 80px; }
-
-  .history-day {
-    background: var(--card);
-    border: 1px solid var(--bordo);
-    border-radius: 12px;
-    margin-bottom: 10px;
-    overflow: hidden;
-  }
-
-  .history-day-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 14px;
-    cursor: pointer;
-    background: rgba(42,26,66,0.5);
-  }
-
-  .history-date {
-    font-family: 'Cinzel', serif;
-    font-size: 12px;
-    color: var(--testo-soft);
-  }
-
-  .history-day-total {
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-    color: var(--oro);
-  }
-
-  .history-day-donations {
-    padding: 0 14px 8px;
-    display: none;
-  }
-
-  .history-day-donations.open { display: block; }
-
-  .history-don-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(92,61,122,0.2);
-    font-size: 13px;
-    color: var(--testo-soft);
-  }
-  .history-don-item:last-child { border-bottom: none; }
-  .history-don-amount { color: var(--oro-light); font-family: 'Cinzel', serif; font-size: 13px; }
-
-  /* REPORT PASQUALE */
-  .report-section { padding: 0 16px; margin-bottom: 80px; }
-
-  .report-card {
-    background: linear-gradient(135deg, rgba(42,26,66,0.95), rgba(26,13,46,0.95));
-    border: 1px solid var(--oro);
-    border-radius: 16px;
-    padding: 24px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .report-card::before {
-    content: '✟';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 120px;
-    color: rgba(201,162,39,0.04);
-    font-family: serif;
-  }
-
-  .report-title {
-    font-family: 'Cinzel', serif;
-    font-size: 18px;
-    color: var(--oro);
-    margin-bottom: 6px;
-    letter-spacing: 1px;
-  }
-
-  .report-subtitle {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 14px;
-    color: var(--testo-soft);
-    margin-bottom: 24px;
-  }
-
-  .report-amount {
-    font-family: 'Cinzel', serif;
-    font-size: 52px;
-    font-weight: 700;
-    color: var(--oro);
-    text-shadow: 0 0 40px rgba(201,162,39,0.5);
-    margin-bottom: 8px;
-  }
-
-  .report-desc {
-    font-size: 14px;
-    color: var(--testo-soft);
-    font-style: italic;
-    margin-bottom: 20px;
-    line-height: 1.6;
-  }
-
-  .report-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-    padding: 16px;
-    background: rgba(74,26,110,0.2);
-    border-radius: 12px;
-    border: 1px solid rgba(92,61,122,0.4);
-  }
-
-  .report-stat { text-align: center; }
-  .report-stat-val { font-family: 'Cinzel', serif; font-size: 20px; color: var(--oro-light); display: block; }
-  .report-stat-lbl { font-size: 10px; color: var(--testo-soft); font-style: italic; }
-
-  .share-btn {
-    background: linear-gradient(135deg, var(--viola-light), var(--viola));
-    border: 1px solid var(--oro);
-    color: var(--oro);
-    font-family: 'Cinzel', serif;
-    font-size: 13px;
-    letter-spacing: 1px;
-    padding: 14px 24px;
-    border-radius: 12px;
-    cursor: pointer;
-    width: 100%;
-    transition: all 0.2s;
-    margin-top: 8px;
-  }
-  .share-btn:active { transform: scale(0.97); }
-
-  /* NAV */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 430px;
-    background: rgba(26,13,46,0.97);
-    border-top: 1px solid var(--bordo);
-    display: flex;
-    backdrop-filter: blur(10px);
-    z-index: 100;
-  }
-
-  .nav-btn {
-    flex: 1;
-    padding: 10px 4px 8px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    transition: all 0.2s;
-    color: var(--testo-soft);
-  }
-
-  .nav-btn.active { color: var(--oro); }
-  .nav-btn .nav-icon { font-size: 22px; }
-  .nav-btn .nav-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.5px; }
-
-  /* VIEWS */
-  .view { display: none; padding-top: 8px; }
-  .view.active { display: block; }
-
-  /* MODALE IMPOSTAZIONI */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 200;
-    display: flex;
-    align-items: flex-end;
-    backdrop-filter: blur(4px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-  .modal {
-    background: linear-gradient(180deg, #2a1a42 0%, #1a0d2e 100%);
-    border: 1px solid var(--bordo);
-    border-bottom: none;
-    border-radius: 20px 20px 0 0;
-    width: 100%;
-    max-width: 430px;
-    margin: 0 auto;
-    padding: 20px;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-    max-height: 85vh;
-    overflow-y: auto;
-  }
-
-  .modal-overlay.open .modal { transform: translateY(0); }
-
-  .modal-handle {
-    width: 36px;
-    height: 4px;
-    background: var(--bordo);
-    border-radius: 2px;
-    margin: 0 auto 20px;
-  }
-
-  .modal-title {
-    font-family: 'Cinzel', serif;
-    font-size: 16px;
-    color: var(--oro);
-    margin-bottom: 20px;
-    text-align: center;
-    letter-spacing: 1px;
-  }
-
-  .setting-group { margin-bottom: 20px; }
-
-  .setting-label {
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    color: var(--testo-soft);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    display: block;
-  }
-
-  .amount-inputs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-
-  .amount-input-wrap { position: relative; }
-  .amount-input-wrap label {
-    font-size: 11px;
-    color: var(--testo-soft);
-    display: block;
-    margin-bottom: 4px;
-  }
-
-  .amount-input {
-    width: 100%;
-    background: var(--card-light);
-    border: 1px solid var(--bordo);
-    border-radius: 10px;
-    color: var(--testo);
-    font-family: 'Cinzel', serif;
-    font-size: 16px;
-    padding: 10px 12px 10px 30px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .amount-input:focus { border-color: var(--oro); }
-
-  .euro-prefix {
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
-    color: var(--oro);
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-  }
-
-  .lent-year-wrap {
-    position: relative;
-  }
-
-  .lent-year-input {
-    width: 100%;
-    background: var(--card-light);
-    border: 1px solid var(--bordo);
-    border-radius: 10px;
-    color: var(--testo);
-    font-family: 'Cinzel', serif;
-    font-size: 15px;
-    padding: 10px 12px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .lent-year-input:focus { border-color: var(--oro); }
-
-  .save-btn {
-    background: linear-gradient(135deg, var(--oro), #a07a10);
-    border: none;
-    color: #1a0d2e;
-    font-family: 'Cinzel', serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    padding: 16px 24px;
-    border-radius: 12px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 12px;
-    transition: all 0.2s;
-  }
-  .save-btn:active { transform: scale(0.97); }
-
-  .danger-btn {
-    background: none;
-    border: 1px solid var(--rosso);
-    color: var(--rosso);
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 1px;
-    padding: 12px 24px;
-    border-radius: 12px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 8px;
-    transition: all 0.2s;
-  }
-  .danger-btn:active { background: rgba(139,26,26,0.1); }
-
-  /* TOAST */
-  .toast {
-    position: fixed;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background: linear-gradient(135deg, var(--viola-light), var(--viola));
-    border: 1px solid var(--oro);
-    color: var(--oro);
-    font-family: 'Cinzel', serif;
-    font-size: 13px;
-    padding: 12px 24px;
-    border-radius: 30px;
-    z-index: 300;
-    opacity: 0;
-    transition: all 0.3s;
-    white-space: nowrap;
-    letter-spacing: 0.5px;
-    pointer-events: none;
-  }
-
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  .export-btn {
-    background: rgba(74,26,110,0.25);
-    border: 1px solid var(--bordo);
-    color: var(--testo-soft);
-    font-family: 'Cinzel', serif;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    padding: 13px 16px;
-    border-radius: 12px;
-    cursor: pointer;
-    width: 100%;
-    transition: all 0.2s;
-    text-align: left;
-  }
-  .export-btn:active { background: rgba(74,26,110,0.4); transform: scale(0.98); }
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--bordo); border-radius: 2px; }
-
-  /* QUOTE quaresimale */
-  .quote-bar {
-    margin: 0 16px 16px;
-    padding: 10px 14px;
-    background: rgba(42,26,66,0.4);
-    border-left: 3px solid var(--oro);
-    border-radius: 0 8px 8px 0;
-  }
-
-  .quote-text {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 13px;
-    color: var(--testo-soft);
-    line-height: 1.5;
-  }
-
-  .quote-source { font-size: 11px; color: rgba(201,162,39,0.6); margin-top: 4px; }
-
-  /* Pulsante stampa */
-  @media print {
-    .bottom-nav, .settings-btn, .header { display: none; }
-    body { background: white; color: black; }
-    .report-card { border: 2px solid #4a1a6e; background: white; color: black; }
-  }
+:root {
+  --viola: #4a1a6e;
+  --viola-light: #7b3fa0;
+  --oro: #c9a227;
+  --oro-light: #e8c45a;
+  --rosso: #8b1a1a;
+  --verde: #2d5a27;
+  --bg: #1a0d2e;
+  --card: #2a1a42;
+  --card-light: #3a2455;
+  --testo: #f0e6d0;
+  --testo-soft: #c4b49a;
+  --bordo: #5c3d7a;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Crimson Text', serif;
+  background: var(--bg);
+  color: var(--testo);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(74,26,110,0.5) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(139,26,26,0.25) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+
+.app { position: relative; z-index: 1; }
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(180deg, rgba(42,26,66,0.98), rgba(26,13,46,0.95));
+  border-bottom: 1px solid var(--bordo);
+  padding: 14px 16px 12px;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(10px);
+}
+.header-row { display: flex; align-items: center; justify-content: space-between; }
+.header-left { display: flex; align-items: center; gap: 10px; }
+.header-icon { width: 36px; height: 36px; flex-shrink: 0; }
+.header-title { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600; color: var(--oro); letter-spacing: 1px; }
+.header-date { font-family: 'IM Fell English', serif; font-style: italic; font-size: 11px; color: var(--testo-soft); margin-top: 2px; }
+.header-btns { display: flex; gap: 8px; }
+.icon-btn {
+  background: none; border: 1px solid var(--bordo); color: var(--testo-soft);
+  width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.icon-btn:active { background: var(--card-light); transform: scale(0.93); }
+
+/* ===== COLLETTE DASHBOARD ===== */
+.dashboard { padding: 12px 14px 4px; }
+.dashboard-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+}
+.section-label {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px;
+  color: var(--testo-soft); text-transform: uppercase;
+}
+.add-btn {
+  background: linear-gradient(135deg, var(--viola-light), var(--viola));
+  border: 1px solid var(--oro); color: var(--oro);
+  font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700;
+  width: 32px; height: 32px; border-radius: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; line-height: 1;
+}
+.add-btn:active { transform: scale(0.9); }
+
+.collette-grid { display: flex; flex-direction: column; gap: 10px; }
+
+.colletta-card {
+  background: var(--card);
+  border: 1.5px solid var(--bordo);
+  border-radius: 14px; overflow: hidden;
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+.colletta-card.active-card { border-color: var(--oro); }
+.colletta-card:active { transform: scale(0.99); }
+
+.colletta-top {
+  padding: 12px 14px 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+.colletta-emoji { font-size: 26px; flex-shrink: 0; }
+.colletta-info { flex: 1; min-width: 0; }
+.colletta-name {
+  font-family: 'Cinzel', serif; font-size: 13px; color: var(--oro);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.colletta-meta { font-size: 11px; color: var(--testo-soft); font-style: italic; margin-top: 2px; }
+.colletta-total {
+  font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700;
+  color: var(--oro); text-align: right; flex-shrink: 0;
+}
+.colletta-total small { font-size: 12px; }
+
+.colletta-progress-wrap { padding: 0 14px 12px; }
+.colletta-progress-row {
+  display: flex; justify-content: space-between; margin-bottom: 4px;
+}
+.colletta-prog-label { font-size: 10px; color: var(--testo-soft); }
+.colletta-prog-days { font-size: 10px; color: var(--oro); font-family: 'Cinzel', serif; }
+.progress-bar { height: 3px; background: rgba(92,61,122,0.4); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+.fill-viola { background: linear-gradient(90deg, var(--viola-light), var(--oro)); }
+.fill-verde { background: linear-gradient(90deg, #3a7a30, #7acc66); }
+.fill-oro { background: linear-gradient(90deg, #8b6010, var(--oro)); }
+
+.colletta-stats {
+  display: flex; gap: 0;
+  border-top: 1px solid rgba(92,61,122,0.3);
+}
+.colletta-stat {
+  flex: 1; text-align: center; padding: 8px 4px;
+  border-right: 1px solid rgba(92,61,122,0.3);
+}
+.colletta-stat:last-child { border-right: none; }
+.cstat-val { font-family: 'Cinzel', serif; font-size: 14px; color: var(--oro-light); display: block; }
+.cstat-lbl { font-size: 10px; color: var(--testo-soft); font-style: italic; }
+
+/* ===== VISTA COLLETTA SINGOLA ===== */
+.colletta-view { display: none; }
+.colletta-view.active { display: block; }
+
+.back-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px 6px; cursor: pointer;
+}
+.back-arrow { font-size: 18px; color: var(--testo-soft); }
+.back-label { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px; color: var(--testo-soft); text-transform: uppercase; }
+
+/* Importi */
+.amounts-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; padding: 0 14px; margin-bottom: 14px;
+}
+.amount-btn {
+  background: var(--card); border: 1.5px solid var(--bordo);
+  border-radius: 14px; padding: 14px 10px;
+  cursor: pointer; text-align: center; transition: all 0.15s;
+  position: relative; overflow: hidden;
+}
+.amount-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--viola-light), var(--oro));
+  opacity: 0; transition: opacity 0.15s;
+}
+.amount-btn:active::before { opacity: 0.15; }
+.amount-btn:active { transform: scale(0.95); border-color: var(--oro); }
+.amount-emoji { font-size: 20px; display: block; margin-bottom: 3px; position: relative; }
+.amount-val { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--oro); position: relative; }
+.amount-label { font-size: 11px; color: var(--testo-soft); font-style: italic; position: relative; display: block; margin-top: 1px; }
+
+/* Offerte oggi */
+.today-card {
+  margin: 0 14px 14px;
+  background: var(--card); border: 1px solid var(--bordo); border-radius: 14px; overflow: hidden;
+}
+.today-header {
+  padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid rgba(92,61,122,0.4);
+  background: rgba(42,26,66,0.6);
+}
+.today-title { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px; color: var(--oro-light); }
+.today-total { font-family: 'Cinzel', serif; font-size: 15px; color: var(--oro); }
+.donations-list { max-height: 260px; overflow-y: auto; }
+.donation-item {
+  display: flex; align-items: center; padding: 11px 14px;
+  border-bottom: 1px solid rgba(92,61,122,0.2); animation: slideIn 0.25s ease;
+}
+.donation-item:last-child { border-bottom: none; }
+@keyframes slideIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:none; } }
+.donation-icon {
+  width: 32px; height: 32px; background: rgba(74,26,110,0.4);
+  border: 1px solid var(--bordo); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; margin-right: 10px; flex-shrink: 0;
+}
+.donation-time { font-size: 12px; color: var(--testo-soft); font-style: italic; }
+.donation-amount { font-family: 'Cinzel', serif; font-size: 16px; color: var(--oro); margin-left: auto; }
+.delete-btn {
+  background: none; border: none; color: rgba(139,26,26,0.5);
+  font-size: 16px; cursor: pointer; padding: 4px 6px; margin-left: 6px;
+  border-radius: 6px; transition: all 0.2s;
+}
+.delete-btn:active { color: var(--rosso); background: rgba(139,26,26,0.1); }
+.empty-state { text-align: center; padding: 28px 20px; color: var(--testo-soft); font-style: italic; font-size: 14px; }
+.empty-icon { font-size: 32px; margin-bottom: 8px; display: block; opacity: 0.5; }
+
+/* Quote */
+.quote-bar {
+  margin: 0 14px 14px; padding: 10px 12px;
+  background: rgba(42,26,66,0.4); border-left: 3px solid var(--oro); border-radius: 0 8px 8px 0;
+}
+.quote-text { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13px; color: var(--testo-soft); line-height: 1.5; }
+.quote-source { font-size: 11px; color: rgba(201,162,39,0.6); margin-top: 3px; }
+
+/* ===== STORICO ===== */
+.history-wrap { padding: 0 14px 80px; }
+.history-filter {
+  display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.filter-btn {
+  background: var(--card); border: 1px solid var(--bordo);
+  color: var(--testo-soft); font-family: 'Cinzel', serif; font-size: 10px;
+  letter-spacing: 0.5px; padding: 6px 12px; border-radius: 20px; cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn.active { background: rgba(74,26,110,0.5); border-color: var(--oro); color: var(--oro); }
+.history-day {
+  background: var(--card); border: 1px solid var(--bordo);
+  border-radius: 12px; margin-bottom: 8px; overflow: hidden;
+}
+.history-day-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 11px 13px; cursor: pointer; background: rgba(42,26,66,0.5);
+}
+.history-date { font-family: 'Cinzel', serif; font-size: 11px; color: var(--testo-soft); }
+.history-day-total { font-family: 'Cinzel', serif; font-size: 13px; color: var(--oro); }
+.history-day-donations { padding: 0 13px 6px; display: none; }
+.history-day-donations.open { display: block; }
+.history-don-item {
+  display: flex; justify-content: space-between; padding: 5px 0;
+  border-bottom: 1px solid rgba(92,61,122,0.2); font-size: 12px; color: var(--testo-soft);
+}
+.history-don-item:last-child { border-bottom: none; }
+.history-don-amount { color: var(--oro-light); font-family: 'Cinzel', serif; font-size: 12px; }
+.history-colletta-tag {
+  font-size: 10px; color: var(--viola-light); font-style: italic;
+  background: rgba(74,26,110,0.3); padding: 1px 6px; border-radius: 10px; margin-left: 6px;
+}
+
+/* ===== REPORT ===== */
+.report-wrap { padding: 0 14px 80px; }
+.report-select {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.report-card {
+  background: linear-gradient(135deg, rgba(42,26,66,0.95), rgba(26,13,46,0.95));
+  border: 1px solid var(--oro); border-radius: 16px; padding: 22px;
+  text-align: center; position: relative; overflow: hidden; margin-bottom: 14px;
+}
+.report-card::before {
+  content: attr(data-symbol);
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-size: 110px; color: rgba(201,162,39,0.04); pointer-events: none;
+}
+.report-title { font-family: 'Cinzel', serif; font-size: 16px; color: var(--oro); margin-bottom: 4px; letter-spacing: 1px; }
+.report-subtitle { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13px; color: var(--testo-soft); margin-bottom: 20px; }
+.report-amount { font-family: 'Cinzel', serif; font-size: 46px; font-weight: 700; color: var(--oro); text-shadow: 0 0 30px rgba(201,162,39,0.4); margin-bottom: 6px; }
+.report-desc { font-size: 13px; color: var(--testo-soft); font-style: italic; margin-bottom: 18px; line-height: 1.6; }
+.report-stats {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+  margin-bottom: 18px; padding: 14px 10px;
+  background: rgba(74,26,110,0.2); border-radius: 10px; border: 1px solid rgba(92,61,122,0.4);
+}
+.report-stat-val { font-family: 'Cinzel', serif; font-size: 18px; color: var(--oro-light); display: block; }
+.report-stat-lbl { font-size: 10px; color: var(--testo-soft); font-style: italic; }
+.share-btn {
+  background: linear-gradient(135deg, var(--viola-light), var(--viola));
+  border: 1px solid var(--oro); color: var(--oro);
+  font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px;
+  padding: 13px 20px; border-radius: 11px; cursor: pointer; width: 100%; transition: all 0.2s; margin-top: 6px;
+}
+.share-btn:active { transform: scale(0.97); }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  background: rgba(26,13,46,0.97); border-top: 1px solid var(--bordo);
+  display: flex; backdrop-filter: blur(10px); z-index: 100;
+}
+.nav-btn {
+  flex: 1; padding: 10px 4px 8px; background: none; border: none;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: var(--testo-soft); transition: all 0.2s;
+}
+.nav-btn.active { color: var(--oro); }
+.nav-icon { font-size: 20px; }
+.nav-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.5px; }
+
+/* ===== VIEWS ===== */
+.main-view { display: none; padding-top: 6px; padding-bottom: 80px; }
+.main-view.active { display: block; }
+
+/* ===== MODALI ===== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200;
+  display: flex; align-items: flex-end; backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: linear-gradient(180deg, #2a1a42, #1a0d2e);
+  border: 1px solid var(--bordo); border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 430px; margin: 0 auto;
+  padding: 20px; transform: translateY(100%);
+  transition: transform 0.3s ease; max-height: 88vh; overflow-y: auto;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-handle { width: 36px; height: 4px; background: var(--bordo); border-radius: 2px; margin: 0 auto 18px; }
+.modal-title { font-family: 'Cinzel', serif; font-size: 15px; color: var(--oro); margin-bottom: 18px; text-align: center; letter-spacing: 1px; }
+.modal-field { margin-bottom: 14px; }
+.modal-field label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1.5px; color: var(--testo-soft); text-transform: uppercase; display: block; margin-bottom: 6px; }
+.modal-input {
+  width: 100%; background: var(--card-light); border: 1px solid var(--bordo);
+  border-radius: 10px; color: var(--testo); font-family: 'Crimson Text', serif;
+  font-size: 15px; padding: 10px 12px; outline: none; transition: border-color 0.2s;
+}
+.modal-input:focus { border-color: var(--oro); }
+.modal-select {
+  width: 100%; background: var(--card-light); border: 1px solid var(--bordo);
+  border-radius: 10px; color: var(--testo); font-family: 'Cinzel', serif;
+  font-size: 12px; padding: 10px 12px; outline: none; cursor: pointer;
+  appearance: none;
+}
+.emoji-grid {
+  display: grid; grid-template-columns: repeat(6,1fr); gap: 6px;
+}
+.emoji-opt {
+  background: var(--card-light); border: 1.5px solid transparent;
+  border-radius: 8px; padding: 8px; text-align: center; font-size: 20px;
+  cursor: pointer; transition: all 0.15s;
+}
+.emoji-opt.selected { border-color: var(--oro); background: rgba(74,26,110,0.5); }
+.emoji-opt:active { transform: scale(0.92); }
+
+.setting-group { margin-bottom: 18px; }
+.setting-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1.5px; color: var(--testo-soft); text-transform: uppercase; display: block; margin-bottom: 8px; }
+.amount-inputs { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
+.amount-input-wrap { position: relative; }
+.amount-input-wrap label { font-size: 11px; color: var(--testo-soft); display: block; margin-bottom: 4px; }
+.amount-input {
+  width: 100%; background: var(--card-light); border: 1px solid var(--bordo);
+  border-radius: 10px; color: var(--testo); font-family: 'Cinzel', serif;
+  font-size: 15px; padding: 10px 12px 10px 28px; outline: none; transition: border-color 0.2s;
+}
+.amount-input:focus { border-color: var(--oro); }
+.euro-prefix { position: absolute; left: 10px; bottom: 10px; color: var(--oro); font-family: 'Cinzel', serif; font-size: 13px; }
+
+.save-btn {
+  background: linear-gradient(135deg, var(--oro), #a07a10);
+  border: none; color: #1a0d2e; font-family: 'Cinzel', serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 1px;
+  padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 10px; transition: all 0.2s;
+}
+.save-btn:active { transform: scale(0.97); }
+.danger-btn {
+  background: none; border: 1px solid var(--rosso); color: var(--rosso);
+  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px;
+  padding: 12px; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 8px; transition: all 0.2s;
+}
+.danger-btn:active { background: rgba(139,26,26,0.1); }
+.export-btn {
+  background: rgba(74,26,110,0.25); border: 1px solid var(--bordo);
+  color: var(--testo-soft); font-family: 'Cinzel', serif; font-size: 11px;
+  letter-spacing: 0.5px; padding: 12px 14px; border-radius: 12px;
+  cursor: pointer; width: 100%; transition: all 0.2s; text-align: left; margin-top: 6px;
+}
+.export-btn:active { background: rgba(74,26,110,0.4); }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; top: 76px; left: 50%;
+  transform: translateX(-50%) translateY(-16px);
+  background: linear-gradient(135deg, var(--viola-light), var(--viola));
+  border: 1px solid var(--oro); color: var(--oro);
+  font-family: 'Cinzel', serif; font-size: 12px; padding: 11px 22px;
+  border-radius: 30px; z-index: 300; opacity: 0; transition: all 0.3s;
+  white-space: nowrap; letter-spacing: 0.5px; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: var(--bordo); border-radius: 2px; }
+
+@media print {
+  .bottom-nav, .icon-btn, .header, .back-bar, .share-btn { display: none !important; }
+  body { background: white; color: black; max-width: 100%; }
+}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="header-top">
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <div class="header-left">
+      <!-- SVG salvadanaio con moneta -->
+      <svg class="header-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Corpo salvadanaio -->
+        <ellipse cx="24" cy="30" rx="15" ry="12" fill="#c9a227"/>
+        <ellipse cx="24" cy="28.5" rx="15" ry="12" fill="#e8c45a"/>
+        <ellipse cx="24" cy="27" rx="15" ry="11.5" fill="#c9a227"/>
+        <!-- Riflesso lucido -->
+        <ellipse cx="19" cy="21" rx="5" ry="3" fill="#f0d060" opacity="0.4" transform="rotate(-20 19 21)"/>
+        <!-- Collo/tappo -->
+        <rect x="19" y="15" width="10" height="6" rx="3" fill="#7b3fa0"/>
+        <ellipse cx="24" cy="16" rx="9" ry="4.5" fill="#9b5fc0"/>
+        <!-- Fessura moneta -->
+        <rect x="20" y="13" width="8" height="2.5" rx="1.2" fill="#3a1a55"/>
+        <!-- Moneta che entra (animata) -->
+        <rect x="21.5" y="7" width="5" height="7" rx="2.5" fill="#f0d060" opacity="0.95">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,2;0,4;0,6" dur="1.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+          <animate attributeName="opacity" values="0.95;0.95;0.4;0" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Linee decorative corpo -->
+        <ellipse cx="24" cy="27" rx="7" ry="3" fill="#a07810" opacity="0.35"/>
+      </svg>
       <div>
-        <h1>✟ Salvadanaio della Quaresima</h1>
-        <div class="header-sub" id="headerDate">Caricamento...</div>
+        <div class="header-title">Salvadanaio Digitale</div>
+        <div class="header-date" id="headerDate">—</div>
       </div>
-      <button class="settings-btn" onclick="openSettings()" title="Impostazioni">⚙️</button>
+    </div>
+    <div class="header-btns">
+      <button class="icon-btn" onclick="openSettings()" title="Impostazioni">⚙️</button>
     </div>
   </div>
+</div>
 
-  <!-- VIEWS -->
-
-  <!-- HOME -->
-  <div class="view active" id="view-home">
-    <!-- Progress Quaresima -->
-    <div class="lent-progress">
-      <div class="lent-info">
-        <span class="lent-label">Cammino Quaresimale</span>
-        <span class="lent-days" id="lentDaysLeft"></span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="lentProgress"></div>
-      </div>
+<!-- ========== VIEW: DASHBOARD ========== -->
+<div class="main-view active" id="view-dashboard">
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <span class="section-label">Le tue collette</span>
+      <button class="add-btn" onclick="openNewColletta()" title="Nuova colletta">+</button>
     </div>
-
-    <!-- Totale Quaresima -->
-    <div class="total-card">
-      <div class="total-label">Totale Offerte Quaresima</div>
-      <div class="total-amount"><span>€</span><span id="grandTotal">0,00</span></div>
-      <div class="total-sub" id="totalSub">Inizia la tua quaresima di carità</div>
-      <div class="total-stats">
-        <div class="stat-item">
-          <span class="stat-val" id="statGiorni">0</span>
-          <span class="stat-lbl">Giorni</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-val" id="statDonazioni">0</span>
-          <span class="stat-lbl">Offerte</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-val" id="statMedia">€0</span>
-          <span class="stat-lbl">Media/giorno</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Citazione -->
-    <div class="quote-bar" id="quoteBar"></div>
-
-    <!-- Bottoni importo -->
-    <div class="section-title">Aggiungi un'offerta</div>
-    <div class="amounts-grid" id="amountsGrid"></div>
-
-    <!-- Donazioni di oggi -->
-    <div class="today-section">
-      <div class="today-card">
-        <div class="today-header">
-          <span class="today-title">✟ Offerte di oggi</span>
-          <span class="today-total" id="todayTotal">€ 0,00</span>
-        </div>
-        <div class="donations-list" id="todayList"></div>
-      </div>
+    <div class="collette-grid" id="colletteGrid">
+      <div class="empty-state"><span class="empty-icon">🏦</span>Nessuna colletta ancora.<br>Premi + per iniziarne una.</div>
     </div>
   </div>
+</div>
 
-  <!-- STORICO -->
-  <div class="view" id="view-history">
-    <div style="padding: 16px 0 8px;">
-      <div class="section-title">Storico per Giorno</div>
-    </div>
-    <div class="history-section" id="historyList"></div>
+<!-- ========== VIEW: COLLETTA SINGOLA ========== -->
+<div class="main-view" id="view-colletta">
+  <div class="back-bar" onclick="backToDashboard()">
+    <span class="back-arrow">←</span>
+    <span class="back-label">Tutte le collette</span>
   </div>
 
-  <!-- REPORT -->
-  <div class="view" id="view-report">
-    <div style="padding: 16px 0 8px;">
-      <div class="section-title">Tallone di Pasqua</div>
-    </div>
-    <div class="report-section" id="reportSection"></div>
+  <!-- Info colletta attiva -->
+  <div id="collettaActiveInfo"></div>
+
+  <!-- Quote (solo per quaresima) -->
+  <div class="quote-bar" id="quoteBar" style="display:none"></div>
+
+  <!-- Bottoni importo -->
+  <div style="padding: 0 14px 8px;">
+    <div class="section-label" style="margin-bottom:10px;">Aggiungi offerta</div>
   </div>
+  <div class="amounts-grid" id="amountsGrid"></div>
+
+  <!-- Offerte di oggi -->
+  <div class="today-card">
+    <div class="today-header">
+      <span class="today-title">Offerte di oggi</span>
+      <span class="today-total" id="todayTotal">€ 0,00</span>
+    </div>
+    <div class="donations-list" id="todayList"></div>
+  </div>
+</div>
+
+<!-- ========== VIEW: STORICO ========== -->
+<div class="main-view" id="view-storico">
+  <div style="padding: 12px 14px 6px;">
+    <div class="section-label">Storico offerte</div>
+  </div>
+  <div class="history-wrap">
+    <div class="history-filter" id="historyFilter"></div>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<!-- ========== VIEW: REPORT ========== -->
+<div class="main-view" id="view-report">
+  <div style="padding: 12px 14px 6px;">
+    <div class="section-label">Report & Tallone</div>
+  </div>
+  <div class="report-wrap">
+    <div class="report-select" id="reportSelect"></div>
+    <div id="reportContent"></div>
+  </div>
+</div>
 
 </div><!-- .app -->
 
 <!-- NAV -->
 <div class="bottom-nav">
-  <button class="nav-btn active" onclick="showView('home', this)">
-    <span class="nav-icon">🕊️</span>
-    <span class="nav-label">Offerte</span>
+  <button class="nav-btn active" id="nav-dashboard" onclick="showMainView('dashboard',this)">
+    <span class="nav-icon">🏦</span><span class="nav-label">Collette</span>
   </button>
-  <button class="nav-btn" onclick="showView('history', this)">
-    <span class="nav-icon">📜</span>
-    <span class="nav-label">Storico</span>
+  <button class="nav-btn" id="nav-storico" onclick="showMainView('storico',this)">
+    <span class="nav-icon">📜</span><span class="nav-label">Storico</span>
   </button>
-  <button class="nav-btn" onclick="showView('report', this)">
-    <span class="nav-icon">🌷</span>
-    <span class="nav-label">Pasqua</span>
+  <button class="nav-btn" id="nav-report" onclick="showMainView('report',this)">
+    <span class="nav-icon">🌷</span><span class="nav-label">Report</span>
   </button>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODALE IMPOSTAZIONI -->
-<div class="modal-overlay" id="settingsOverlay" onclick="closeSettingsOutside(event)">
+<!-- MODALE: NUOVA COLLETTA -->
+<div class="modal-overlay" id="newCollettaOverlay" onclick="closeModalOutside(event,'newCollettaOverlay')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="newCollettaTitle">✟ Nuova Colletta</div>
+    <div class="modal-field">
+      <label>Nome colletta</label>
+      <input type="text" class="modal-input" id="nc_name" placeholder="es. Quaresima 2025, Fondo Emergenze...">
+    </div>
+    <div class="modal-field">
+      <label>Tipo</label>
+      <select class="modal-select" id="nc_type" onchange="onTypeChange()">
+        <option value="quaresima_romana">⛪ Quaresima Romana</option>
+        <option value="quaresima_ambrosiana">🕊️ Quaresima Ambrosiana</option>
+        <option value="libera">📅 Colletta a date libere</option>
+      </select>
+    </div>
+    <div id="nc_year_wrap" class="modal-field">
+      <label>Anno</label>
+      <input type="number" class="modal-input" id="nc_year" value="2025" min="2020" max="2040">
+    </div>
+    <div id="nc_dates_wrap" style="display:none;">
+      <div class="modal-field">
+        <label>Data inizio</label>
+        <input type="date" class="modal-input" id="nc_start">
+      </div>
+      <div class="modal-field">
+        <label>Data fine</label>
+        <input type="date" class="modal-input" id="nc_end">
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>Icona</label>
+      <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
+    <button class="save-btn" onclick="saveNewColletta()">✓ Crea Colletta</button>
+    <button class="danger-btn" style="border-color:var(--bordo);color:var(--testo-soft);" onclick="closeModal('newCollettaOverlay')">Annulla</button>
+  </div>
+</div>
+
+<!-- MODALE: IMPOSTAZIONI -->
+<div class="modal-overlay" id="settingsOverlay" onclick="closeModalOutside(event,'settingsOverlay')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">⚙️ Impostazioni</div>
@@ -916,45 +587,104 @@
       <div class="amount-inputs" id="amountInputs"></div>
     </div>
 
-    <div class="setting-group">
-      <span class="setting-label">Anno Quaresima</span>
-      <div class="lent-year-wrap">
-        <input type="number" class="lent-year-input" id="settingYear" value="2025">
-      </div>
+    <div class="setting-group" style="margin-top:18px;">
+      <span class="setting-label">Trasferisci dati</span>
+      <button class="export-btn" onclick="exportData()">📤 Esporta dati (scarica JSON)</button>
+      <button class="export-btn" style="background:rgba(45,90,39,0.2);border-color:#2d5a27;color:#90c878;" onclick="document.getElementById('importFile').click()">📥 Importa dati (da file JSON)</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+      <button class="export-btn" style="background:rgba(201,162,39,0.08);border-color:var(--oro);color:var(--oro-light);" onclick="showRawData()">📋 Copia dati come testo</button>
+      <button class="export-btn" style="background:rgba(201,162,39,0.08);border-color:var(--oro);color:var(--oro-light);" onclick="togglePasteArea()">📝 Incolla dati da testo</button>
+      <textarea id="pasteArea" placeholder="Incolla qui il testo copiato dall'altra app..." style="display:none;width:100%;margin-top:8px;background:var(--card-light);border:1px solid var(--bordo);border-radius:10px;color:var(--testo);font-size:12px;padding:10px;min-height:70px;font-family:monospace;outline:none;resize:vertical;"></textarea>
+      <button id="pasteConfirmBtn" style="display:none;margin-top:6px;width:100%;background:linear-gradient(135deg,var(--viola-light),var(--viola));border:1px solid var(--oro);color:var(--oro);font-family:'Cinzel',serif;font-size:12px;padding:12px;border-radius:10px;cursor:pointer;" onclick="pasteImport()">✓ Importa testo incollato</button>
+    </div>
+
+    <div class="setting-group" style="margin-top:18px;">
+      <span class="setting-label">Recupero manuale</span>
+      <p style="font-size:12px;color:var(--testo-soft);font-style:italic;margin-bottom:8px;line-height:1.5;">
+        Se non riesci ad esportare i dati dalla vecchia app, inserisci il totale precedente a mano: verrà creata un'offerta storica con la data e l'importo che indichi.
+      </p>
+      <button class="export-btn" style="background:rgba(139,26,26,0.15);border-color:#8b4a1a;color:#e0a060;" onclick="openRecuperoForzato()">🛟 Recupero forzato manuale</button>
     </div>
 
     <button class="save-btn" onclick="saveSettings()">✓ Salva Impostazioni</button>
-
-    <div class="setting-group" style="margin-top:20px;">
-      <span class="setting-label">Trasferisci dati tra dispositivi</span>
-      <button class="export-btn" onclick="exportData()">📤 Esporta dati (scarica file JSON)</button>
-      <div style="margin-top:8px;">
-        <button class="export-btn" style="background:rgba(45,90,39,0.2);border-color:#2d5a27;color:#90c878;" onclick="document.getElementById('importFile').click()">📥 Importa dati (da file JSON)</button>
-        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-      </div>
-      <div style="margin-top:8px;">
-        <button class="export-btn" style="background:rgba(201,162,39,0.1);border-color:var(--oro);color:var(--oro-light);" onclick="showRawData()">📋 Copia dati come testo</button>
-      </div>
-      <div style="margin-top:8px;">
-        <button class="export-btn" style="background:rgba(201,162,39,0.1);border-color:var(--oro);color:var(--oro-light);" onclick="togglePasteArea()">📝 Incolla dati da testo</button>
-        <textarea id="pasteArea" placeholder="Incolla qui il testo copiato dall'altra app..." style="display:none;width:100%;margin-top:8px;background:var(--card-light);border:1px solid var(--bordo);border-radius:10px;color:var(--testo);font-size:12px;padding:10px;min-height:80px;font-family:monospace;outline:none;resize:vertical;"></textarea>
-        <button id="pasteConfirmBtn" style="display:none;margin-top:6px;width:100%;background:linear-gradient(135deg,var(--viola-light),var(--viola));border:1px solid var(--oro);color:var(--oro);font-family:'Cinzel',serif;font-size:12px;padding:12px;border-radius:10px;cursor:pointer;" onclick="pasteImport()">✓ Importa testo incollato</button>
-      </div>
-    </div>
-
     <button class="danger-btn" onclick="confirmReset()">🗑 Cancella tutti i dati</button>
   </div>
 </div>
 
+<!-- MODALE: SCELTA IMPORTAZIONE -->
+<div class="modal-overlay" id="importChoiceOverlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📥 Come importare?</div>
+    <p style="font-size:13px;color:var(--testo-soft);font-style:italic;text-align:center;margin-bottom:20px;line-height:1.6;">
+      Hai già dei dati nell'app.<br>Come vuoi procedere?
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:10px;">
+      <!-- Opzione Somma -->
+      <div onclick="confirmImport('merge')" style="background:rgba(45,90,39,0.2);border:1.5px solid #2d5a27;border-radius:14px;padding:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#90c878'" onmouseout="this.style.borderColor='#2d5a27'">
+        <div style="font-family:'Cinzel',serif;font-size:13px;color:#90c878;margin-bottom:4px;">➕ Somma i dati</div>
+        <div style="font-size:12px;color:var(--testo-soft);line-height:1.5;">Aggiunge le offerte del file a quelle già presenti. I duplicati vengono ignorati automaticamente.<br><b style="color:#90c878">Consigliato</b> se hai già iniziato ad usare la nuova app.</div>
+      </div>
+
+      <!-- Opzione Sostituisci -->
+      <div onclick="confirmImport('replace')" style="background:rgba(139,26,26,0.15);border:1.5px solid #8b1a1a;border-radius:14px;padding:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#cc4444'" onmouseout="this.style.borderColor='#8b1a1a'">
+        <div style="font-family:'Cinzel',serif;font-size:13px;color:#e07070;margin-bottom:4px;">🔄 Sostituisci tutto</div>
+        <div style="font-size:12px;color:var(--testo-soft);line-height:1.5;">Cancella tutti i dati presenti e li sostituisce con quelli del file importato.<br><b style="color:#e07070">Attenzione:</b> i dati attuali andranno persi.</div>
+      </div>
+    </div>
+
+    <button class="danger-btn" style="border-color:var(--bordo);color:var(--testo-soft);" onclick="cancelImport()">Annulla</button>
+  </div>
+</div>
+
+<!-- MODALE: RECUPERO FORZATO -->
+<div class="modal-overlay" id="recuperoOverlay" onclick="closeModalOutside(event,'recuperoOverlay')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🛟 Recupero Forzato</div>
+    <p style="font-size:13px;color:var(--testo-soft);font-style:italic;text-align:center;margin-bottom:18px;line-height:1.6;">
+      Inserisci il totale delle offerte che non riesci a recuperare dal file. Verrà creata una voce storica con la data che indichi.
+    </p>
+
+    <div class="modal-field">
+      <label>Colletta di destinazione</label>
+      <select class="modal-select" id="rec_colletta"></select>
+    </div>
+    <div class="modal-field">
+      <label>Data di riferimento (ultimo giorno registrato)</label>
+      <input type="date" class="modal-input" id="rec_date">
+    </div>
+    <div class="modal-field">
+      <label>Totale da recuperare (€)</label>
+      <div style="position:relative;">
+        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--oro);font-family:'Cinzel',serif;font-size:16px;">€</span>
+        <input type="number" class="modal-input" id="rec_amount" style="padding-left:30px;" min="0.01" step="0.01" placeholder="0,00">
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>Numero di offerte (facoltativo)</label>
+      <input type="number" class="modal-input" id="rec_count" min="1" step="1" placeholder="es. 5 — opzionale">
+    </div>
+    <div style="background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.2);border-radius:10px;padding:12px;margin-bottom:14px;">
+      <div style="font-size:11px;color:var(--testo-soft);line-height:1.6;">
+        💡 Se indichi il numero di offerte, verranno create tante voci separate (importo diviso equamente). Altrimenti verrà creata una sola voce riepilogativa.
+      </div>
+    </div>
+    <button class="save-btn" onclick="eseguiRecuperoForzato()">✓ Aggiungi offerte recuperate</button>
+    <button class="danger-btn" style="border-color:var(--bordo);color:var(--testo-soft);" onclick="closeModal('recuperoOverlay')">Annulla</button>
+  </div>
+</div>
+
 <script>
-// =====================
-// DATI & STATO
-// =====================
+// ============================================================
+// COSTANTI
+// ============================================================
 
 const QUOTES = [
   { text: "Quando fai l'elemosina, non sappia la tua sinistra ciò che fa la tua destra.", source: "Mt 6,3" },
-  { text: "Date e vi sarà dato; una misura buona, pigiata, colma e traboccante vi sarà versata nel grembo.", source: "Lc 6,38" },
-  { text: "Chi semina scarsamente, scarsamente raccoglierà; chi semina con larghezza, con larghezza raccoglierà.", source: "2Cor 9,6" },
+  { text: "Date e vi sarà dato; una misura buona, pigiata, colma e traboccante.", source: "Lc 6,38" },
+  { text: "Chi semina con larghezza, con larghezza raccoglierà.", source: "2Cor 9,6" },
   { text: "Beati i misericordiosi, perché troveranno misericordia.", source: "Mt 5,7" },
   { text: "La carità copre una moltitudine di peccati.", source: "1Pt 4,8" },
   { text: "Ciò che avete fatto al più piccolo dei miei fratelli, l'avete fatto a me.", source: "Mt 25,40" },
@@ -962,573 +692,828 @@ const QUOTES = [
   { text: "Convertitevi a me con tutto il cuore, con digiuni, con pianti e lamenti.", source: "Gl 2,12" },
 ];
 
-const AMOUNT_LABELS = {
-  1: "Piccolo dono",
-  2: "Doppio dono",
-  5: "Gesto di cuore",
-  10: "Offerta generosa",
-  20: "Dono abbondante",
-  50: "Grande carità",
-};
+const EMOJIS = ['✟','🕊️','🙏','💛','🌿','⛪','🌷','🫙','💰','🏦','❤️','⭐'];
+
+const AMOUNT_LABELS = { 1:'Piccolo dono', 2:'Doppio dono', 5:'Gesto di cuore', 10:'Offerta generosa', 20:'Dono abbondante', 50:'Grande carità' };
+
+// ============================================================
+// STATO
+// ============================================================
+
+let activeCollettaId = null; // quale colletta è aperta nella vista singola
+let editingCollettaId = null; // null = nuova, stringa = modifica
+
+// ============================================================
+// STORAGE
+// ============================================================
 
 function getSettings() {
-  const def = { amounts: [1, 2, 5, 10], year: 2025 };
-  try {
-    const s = JSON.parse(localStorage.getItem('quaresima_settings') || '{}');
-    return { ...def, ...s };
-  } catch { return def; }
+  try { return JSON.parse(localStorage.getItem('sdg_settings') || '{}'); } catch { return {}; }
+}
+function saveSettingsData(s) { localStorage.setItem('sdg_settings', JSON.stringify(s)); }
+function getAmounts() {
+  const s = getSettings();
+  return s.amounts || [1, 2, 5, 10];
 }
 
-function saveSettingsData(s) {
-  localStorage.setItem('quaresima_settings', JSON.stringify(s));
+function getCollette() {
+  try { return JSON.parse(localStorage.getItem('sdg_collette') || '[]'); } catch { return []; }
 }
+function saveCollette(c) { localStorage.setItem('sdg_collette', JSON.stringify(c)); }
 
 function getDonations() {
-  try {
-    return JSON.parse(localStorage.getItem('quaresima_donations') || '[]');
-  } catch { return []; }
+  try { return JSON.parse(localStorage.getItem('sdg_donations') || '[]'); } catch { return []; }
 }
+function saveDonations(d) { localStorage.setItem('sdg_donations', JSON.stringify(d)); }
 
-function saveDonations(d) {
-  localStorage.setItem('quaresima_donations', JSON.stringify(d));
-}
+// ============================================================
+// CALENDARI
+// ============================================================
 
-// =====================
-// CALCOLI QUARESIMA
-// =====================
-
-// Calcola Pasqua (algoritmo Anonymous Gregorian)
 function calcEaster(year) {
-  const a = year % 19;
-  const b = Math.floor(year / 100);
-  const c = year % 100;
-  const d = Math.floor(b / 4);
-  const e = b % 4;
-  const f = Math.floor((b + 8) / 25);
-  const g = Math.floor((b - f + 1) / 3);
-  const h = (19 * a + b - d - g + 15) % 30;
-  const i = Math.floor(c / 4);
-  const k = c % 4;
-  const l = (32 + 2 * e + 2 * i - h - k) % 7;
-  const m = Math.floor((a + 11 * h + 22 * l) / 451);
-  const month = Math.floor((h + l - 7 * m + 114) / 31);
-  const day = ((h + l - 7 * m + 114) % 31) + 1;
-  return new Date(year, month - 1, day);
+  const a=year%19, b=Math.floor(year/100), c=year%100, d=Math.floor(b/4), e=b%4,
+        f=Math.floor((b+8)/25), g=Math.floor((b-f+1)/3), h=(19*a+b-d-g+15)%30,
+        i=Math.floor(c/4), k=c%4, l=(32+2*e+2*i-h-k)%7,
+        m=Math.floor((a+11*h+22*l)/451),
+        month=Math.floor((h+l-7*m+114)/31), day=((h+l-7*m+114)%31)+1;
+  return new Date(year, month-1, day);
 }
 
-// Mercoledì delle Ceneri = 46 giorni prima di Pasqua
 function calcAshWednesday(year) {
-  const easter = calcEaster(year);
-  const ash = new Date(easter);
-  ash.setDate(ash.getDate() - 46);
-  return ash;
+  const d = calcEaster(year); d.setDate(d.getDate()-46); return d;
 }
+
+// Quaresima Ambrosiana: inizia la domenica dopo il Mercoledì delle Ceneri romano
+// (6 domeniche prima di Pasqua = Prima domenica di Quaresima ambrosiana)
+// Tecnicamente: la prima domenica 40 giorni prima di Pasqua (senza contare domeniche)
+// Per semplicità: inizia la prima domenica dopo le Ceneri romane
+function calcAmbrosianaStart(year) {
+  const ash = calcAshWednesday(year);
+  const d = new Date(ash);
+  // Scorri a domenica successiva
+  while (d.getDay() !== 0) d.setDate(d.getDate() + 1);
+  return d;
+}
+
+function getCollettaDates(colletta) {
+  if (colletta.type === 'quaresima_romana') {
+    const year = colletta.year || new Date().getFullYear();
+    return { start: calcAshWednesday(year), end: calcEaster(year), totalDays: 46 };
+  }
+  if (colletta.type === 'quaresima_ambrosiana') {
+    const year = colletta.year || new Date().getFullYear();
+    const start = calcAmbrosianaStart(year);
+    const end = calcEaster(year);
+    const totalDays = Math.round((end - start) / 86400000);
+    return { start, end, totalDays };
+  }
+  // libera
+  const start = colletta.startDate ? new Date(colletta.startDate) : new Date();
+  const end = colletta.endDate ? new Date(colletta.endDate) : new Date(start.getTime() + 40*86400000);
+  const totalDays = Math.max(1, Math.round((end - start) / 86400000));
+  return { start, end, totalDays };
+}
+
+// ============================================================
+// FORMATTATORI
+// ============================================================
 
 function dateStr(d) {
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
-
-function formatDate(dateString) {
-  const [y,m,d] = dateString.split('-').map(Number);
-  const dt = new Date(y, m-1, d);
-  const days = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
-  const months = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+function todayStr() { return dateStr(new Date()); }
+function formatDate(s) {
+  const [y,m,d] = s.split('-').map(Number);
+  const dt = new Date(y,m-1,d);
+  const days=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  const months=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
   return `${days[dt.getDay()]} ${d} ${months[m-1]}`;
 }
-
-function formatTime(isoString) {
-  const d = new Date(isoString);
-  return d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+function formatDateShort(s) {
+  const [y,m,d] = s.split('-').map(Number);
+  const months=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  return `${d} ${months[m-1]} ${y}`;
+}
+function formatTime(iso) {
+  return new Date(iso).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+}
+function formatEuro(n) { return n.toFixed(2).replace('.',','); }
+function formatDateLong(d) {
+  return d.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
 }
 
-function formatEuro(n) {
-  return n.toFixed(2).replace('.', ',');
-}
-
-function todayStr() {
-  return dateStr(new Date());
-}
-
-// =====================
-// RENDER
-// =====================
-
-function renderAll() {
-  renderHeader();
-  renderProgress();
-  renderTotals();
-  renderQuote();
-  renderAmounts();
-  renderTodayList();
-  if (document.getElementById('view-history').classList.contains('active')) renderHistory();
-  if (document.getElementById('view-report').classList.contains('active')) renderReport();
-}
+// ============================================================
+// RENDER HEADER
+// ============================================================
 
 function renderHeader() {
   const now = new Date();
-  const days = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
-  const months = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
-  document.getElementById('headerDate').textContent = 
+  const days=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  const months=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  document.getElementById('headerDate').textContent =
     `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 }
 
-function renderProgress() {
-  const s = getSettings();
-  const year = s.year;
-  const ash = calcAshWednesday(year);
-  const easter = calcEaster(year);
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+// ============================================================
+// DASHBOARD
+// ============================================================
 
-  const totalDays = 46;
-  const elapsed = Math.max(0, Math.min(totalDays, Math.floor((today - ash) / 86400000)));
-  const remaining = Math.max(0, totalDays - elapsed);
-  const pct = Math.min(100, (elapsed / totalDays) * 100);
-
-  document.getElementById('lentProgress').style.width = pct + '%';
-
-  if (today < ash) {
-    const daysToAsh = Math.ceil((ash - today) / 86400000);
-    document.getElementById('lentDaysLeft').textContent = `Ceneri tra ${daysToAsh} giorni`;
-  } else if (today >= ash && today <= easter) {
-    if (remaining === 0) {
-      document.getElementById('lentDaysLeft').textContent = '🌷 Buona Pasqua!';
-    } else {
-      document.getElementById('lentDaysLeft').textContent = `${remaining} giorni a Pasqua`;
-    }
-  } else {
-    document.getElementById('lentDaysLeft').textContent = 'Quaresima completata ✓';
-  }
-}
-
-function renderTotals() {
+function renderDashboard() {
+  const collette = getCollette();
   const donations = getDonations();
-  const grandTotal = donations.reduce((sum, d) => sum + d.amount, 0);
-  const today = todayStr();
-  const todayTotal = donations.filter(d => d.date === today).reduce((sum, d) => sum + d.amount, 0);
+  const grid = document.getElementById('colletteGrid');
 
-  // Giorni con almeno una donazione
-  const daysSet = new Set(donations.map(d => d.date));
-  const giorni = daysSet.size;
-
-  document.getElementById('grandTotal').textContent = formatEuro(grandTotal);
-  document.getElementById('statGiorni').textContent = giorni;
-  document.getElementById('statDonazioni').textContent = donations.length;
-  document.getElementById('statMedia').textContent = '€' + (giorni > 0 ? Math.round(grandTotal/giorni) : 0);
-
-  if (grandTotal === 0) {
-    document.getElementById('totalSub').textContent = 'Inizia la tua quaresima di carità';
-  } else {
-    document.getElementById('totalSub').textContent = `${donations.length} offert${donations.length===1?'a':'e'} in ${giorni} giorn${giorni===1?'o':'i'}`;
+  if (collette.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><span class="empty-icon">🏦</span>Nessuna colletta ancora.<br>Premi <b>+</b> per iniziarne una.</div>`;
+    return;
   }
+
+  grid.innerHTML = collette.map(c => {
+    const dons = donations.filter(d => d.collettaId === c.id);
+    const total = dons.reduce((s,d) => s + d.amount, 0);
+    const giorni = new Set(dons.map(d => d.date)).size;
+    const oggi = dons.filter(d => d.date === todayStr()).reduce((s,d) => s + d.amount, 0);
+
+    const { start, end, totalDays } = getCollettaDates(c);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const elapsed = Math.max(0, Math.min(totalDays, Math.floor((today - start) / 86400000)));
+    const remaining = Math.max(0, Math.round((end - today) / 86400000));
+    const pct = Math.min(100, totalDays > 0 ? (elapsed / totalDays) * 100 : 0);
+
+    let progressLabel = '';
+    const fillClass = c.type === 'quaresima_ambrosiana' ? 'fill-verde' : c.type === 'libera' ? 'fill-oro' : 'fill-viola';
+    if (today < start) progressLabel = `Inizia tra ${Math.ceil((start-today)/86400000)} giorni`;
+    else if (today > end) progressLabel = 'Completata ✓';
+    else if (remaining === 0) progressLabel = '🌷 Oggi è il giorno!';
+    else progressLabel = `${remaining} giorni alla fine`;
+
+    const typeLabel = c.type === 'quaresima_romana' ? 'Quaresima Romana' :
+                      c.type === 'quaresima_ambrosiana' ? 'Quaresima Ambrosiana' : 'Colletta libera';
+
+    return `
+      <div class="colletta-card" onclick="openColletta('${c.id}')">
+        <div class="colletta-top">
+          <div class="colletta-emoji">${c.emoji || '✟'}</div>
+          <div class="colletta-info">
+            <div class="colletta-name">${c.name}</div>
+            <div class="colletta-meta">${typeLabel} · ${formatDateLong(start).replace(/\d{4}/,'').trim()} – ${formatDateLong(end)}</div>
+          </div>
+          <div class="colletta-total"><small>€</small>${formatEuro(total)}</div>
+        </div>
+        <div class="colletta-progress-wrap">
+          <div class="colletta-progress-row">
+            <span class="colletta-prog-label">${progressLabel}</span>
+            <span class="colletta-prog-days">${Math.round(pct)}%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill ${fillClass}" style="width:${pct}%"></div></div>
+        </div>
+        <div class="colletta-stats">
+          <div class="colletta-stat"><span class="cstat-val">${dons.length}</span><span class="cstat-lbl">Offerte</span></div>
+          <div class="colletta-stat"><span class="cstat-val">${giorni}</span><span class="cstat-lbl">Giorni</span></div>
+          <div class="colletta-stat"><span class="cstat-val">€${formatEuro(oggi)}</span><span class="cstat-lbl">Oggi</span></div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
-function renderQuote() {
-  const q = QUOTES[Math.floor(Date.now() / 86400000) % QUOTES.length];
-  document.getElementById('quoteBar').innerHTML = 
-    `<div class="quote-text">"${q.text}"</div><div class="quote-source">— ${q.source}</div>`;
+// ============================================================
+// VISTA COLLETTA SINGOLA
+// ============================================================
+
+function openColletta(id) {
+  activeCollettaId = id;
+  const collette = getCollette();
+  const c = collette.find(x => x.id === id);
+  if (!c) return;
+
+  showMainView('colletta', null);
+
+  // Info testata
+  const { start, end, totalDays } = getCollettaDates(c);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const elapsed = Math.max(0, Math.min(totalDays, Math.floor((today - start)/86400000)));
+  const pct = Math.min(100, totalDays > 0 ? (elapsed/totalDays)*100 : 0);
+  const remaining = Math.max(0, Math.round((end - today)/86400000));
+  const fillClass = c.type === 'quaresima_ambrosiana' ? 'fill-verde' : c.type === 'libera' ? 'fill-oro' : 'fill-viola';
+
+  let daysLabel = '';
+  if (today < start) daysLabel = `Inizia tra ${Math.ceil((start-today)/86400000)} giorni`;
+  else if (today > end) daysLabel = 'Completata ✓';
+  else if (remaining === 0) daysLabel = '🌷 Oggi è il giorno finale!';
+  else daysLabel = `${remaining} giorni alla fine`;
+
+  const donations = getDonations().filter(d => d.collettaId === id);
+  const grandTotal = donations.reduce((s,d) => s+d.amount, 0);
+  const daysSet = new Set(donations.map(d => d.date)).size;
+
+  document.getElementById('collettaActiveInfo').innerHTML = `
+    <div style="margin:0 14px 12px;background:linear-gradient(135deg,var(--viola),#2d0d4e);border:1px solid var(--bordo);border-radius:14px;padding:16px;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:8px;top:8px;font-size:36px;opacity:0.15;">${c.emoji||'✟'}</div>
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--oro-light);text-transform:uppercase;margin-bottom:2px;">${c.name}</div>
+      <div style="font-family:'Cinzel',serif;font-size:34px;font-weight:700;color:var(--oro);line-height:1;text-shadow:0 0 20px rgba(201,162,39,0.4)"><span style="font-size:18px">€</span>${formatEuro(grandTotal)}</div>
+      <div style="font-size:12px;color:var(--testo-soft);font-style:italic;margin-top:4px;">${donations.length} offert${donations.length===1?'a':'e'} · ${daysSet} giorn${daysSet===1?'o':'i'}</div>
+      <div style="margin-top:10px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:10px;color:var(--testo-soft);">${daysLabel}</span>
+          <span style="font-size:10px;color:var(--oro);font-family:'Cinzel',serif;">${Math.round(pct)}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill ${fillClass}" style="width:${pct}%"></div></div>
+      </div>
+    </div>`;
+
+  // Quote solo per quaresima
+  const qBar = document.getElementById('quoteBar');
+  if (c.type !== 'libera') {
+    const q = QUOTES[Math.floor(Date.now()/86400000) % QUOTES.length];
+    qBar.innerHTML = `<div class="quote-text">"${q.text}"</div><div class="quote-source">— ${q.source}</div>`;
+    qBar.style.display = 'block';
+  } else {
+    qBar.style.display = 'none';
+  }
+
+  renderAmountsGrid();
+  renderTodayList();
 }
 
-function renderAmounts() {
-  const s = getSettings();
+function backToDashboard() {
+  activeCollettaId = null;
+  showMainView('dashboard', document.getElementById('nav-dashboard'));
+}
+
+function renderAmountsGrid() {
+  const amounts = getAmounts();
   const grid = document.getElementById('amountsGrid');
-  grid.innerHTML = '';
-
-  s.amounts.forEach((amt, i) => {
+  const emojis = ['🕊️','✝️','🙏','💛','🌿','⛪'];
+  grid.innerHTML = amounts.map((amt, i) => {
     const label = AMOUNT_LABELS[amt] || 'Offerta';
-    const emojis = ['🕊️','✝️','🙏','💛','🌿','⛪'];
-    const featured = i === 2; // il terzo bottone
-    const btn = document.createElement('div');
-    btn.className = 'amount-btn' + (featured ? ' featured' : '');
-    btn.innerHTML = `
-      <span class="amount-emoji">${emojis[i % emojis.length]}</span>
-      <div class="amount-val">€ ${amt % 1 === 0 ? amt : amt.toFixed(2)}</div>
+    return `<div class="amount-btn" onclick="addDonation(${amt})">
+      <span class="amount-emoji">${emojis[i%emojis.length]}</span>
+      <div class="amount-val">€ ${amt%1===0?amt:amt.toFixed(2)}</div>
       <span class="amount-label">${label}</span>
-    `;
-    btn.onclick = () => addDonation(amt);
-    grid.appendChild(btn);
-  });
+    </div>`;
+  }).join('');
 }
 
 function renderTodayList() {
-  const donations = getDonations();
-  const today = todayStr();
-  const todayDons = donations.filter(d => d.date === today).sort((a,b) => new Date(b.ts) - new Date(a.ts));
-  const todayTotal = todayDons.reduce((s,d) => s + d.amount, 0);
-
+  if (!activeCollettaId) return;
+  const donations = getDonations().filter(d => d.collettaId === activeCollettaId && d.date === todayStr())
+    .sort((a,b) => new Date(b.ts)-new Date(a.ts));
+  const todayTotal = donations.reduce((s,d) => s+d.amount, 0);
   document.getElementById('todayTotal').textContent = '€ ' + formatEuro(todayTotal);
-
   const list = document.getElementById('todayList');
-  if (todayDons.length === 0) {
+  if (donations.length === 0) {
     list.innerHTML = `<div class="empty-state"><span class="empty-icon">🕊️</span>Nessuna offerta oggi<br>Scegli un importo qui sopra</div>`;
     return;
   }
-
-  list.innerHTML = todayDons.map(d => `
-    <div class="donation-item" id="don-${d.id}">
+  list.innerHTML = donations.map(d => `
+    <div class="donation-item">
       <div class="donation-icon">✟</div>
-      <div class="donation-info">
-        <div class="donation-time">${formatTime(d.ts)}</div>
-      </div>
+      <div style="flex:1"><div class="donation-time">${formatTime(d.ts)}</div></div>
       <div class="donation-amount">€ ${formatEuro(d.amount)}</div>
       <button class="delete-btn" onclick="deleteDonation('${d.id}')">✕</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function renderHistory() {
+// ============================================================
+// STORICO
+// ============================================================
+
+let historyFilter = 'all';
+
+function renderStorico() {
+  const collette = getCollette();
   const donations = getDonations();
-  if (donations.length === 0) {
-    document.getElementById('historyList').innerHTML = 
-      `<div class="empty-state"><span class="empty-icon">📜</span>Nessuna offerta registrata</div>`;
+
+  // Filtri
+  const filterDiv = document.getElementById('historyFilter');
+  filterDiv.innerHTML = `
+    <button class="filter-btn ${historyFilter==='all'?'active':''}" onclick="setHistoryFilter('all')">Tutte</button>
+    ${collette.map(c => `<button class="filter-btn ${historyFilter===c.id?'active':''}" onclick="setHistoryFilter('${c.id}')">${c.emoji||''} ${c.name}</button>`).join('')}
+  `;
+
+  const filtered = historyFilter === 'all' ? donations : donations.filter(d => d.collettaId === historyFilter);
+
+  if (filtered.length === 0) {
+    document.getElementById('historyList').innerHTML = `<div class="empty-state"><span class="empty-icon">📜</span>Nessuna offerta registrata</div>`;
     return;
   }
 
-  // Raggruppa per giorno
   const byDay = {};
-  donations.forEach(d => {
+  filtered.forEach(d => {
     if (!byDay[d.date]) byDay[d.date] = [];
     byDay[d.date].push(d);
   });
 
-  const sortedDays = Object.keys(byDay).sort((a,b) => b.localeCompare(a));
+  const colletteMap = {};
+  collette.forEach(c => colletteMap[c.id] = c);
 
-  document.getElementById('historyList').innerHTML = sortedDays.map(day => {
-    const dons = byDay[day].sort((a,b) => new Date(a.ts) - new Date(b.ts));
-    const total = dons.reduce((s,d) => s + d.amount, 0);
-    const today = todayStr();
-    const isToday = day === today;
-
+  document.getElementById('historyList').innerHTML = Object.keys(byDay).sort((a,b)=>b.localeCompare(a)).map(day => {
+    const dons = byDay[day].sort((a,b)=>new Date(a.ts)-new Date(b.ts));
+    const total = dons.reduce((s,d)=>s+d.amount,0);
+    const isToday = day === todayStr();
     return `
       <div class="history-day">
         <div class="history-day-header" onclick="toggleDay('${day}')">
-          <span class="history-date">${isToday ? '✟ Oggi — ' : ''}${formatDate(day)}</span>
+          <span class="history-date">${isToday?'● ':''} ${formatDate(day)}</span>
           <span class="history-day-total">€ ${formatEuro(total)}</span>
         </div>
         <div class="history-day-donations" id="hist-${day}">
-          ${dons.map(d => `
-            <div class="history-don-item">
-              <span>${formatTime(d.ts)} — ${dons.length} offert${dons.length===1?'a':'e'}</span>
+          ${dons.map(d => {
+            const cTag = historyFilter==='all' && colletteMap[d.collettaId]
+              ? `<span class="history-colletta-tag">${colletteMap[d.collettaId].emoji||''} ${colletteMap[d.collettaId].name}</span>` : '';
+            return `<div class="history-don-item">
+              <span>${formatTime(d.ts)}${cTag}</span>
               <span class="history-don-amount">€ ${formatEuro(d.amount)}</span>
-            </div>
-          `).join('')}
+            </div>`;
+          }).join('')}
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
+function setHistoryFilter(id) {
+  historyFilter = id;
+  renderStorico();
+}
 function toggleDay(day) {
-  const el = document.getElementById('hist-' + day);
-  el.classList.toggle('open');
+  document.getElementById('hist-'+day)?.classList.toggle('open');
 }
 
-function renderReport() {
-  const donations = getDonations();
-  const s = getSettings();
-  const year = s.year;
-  const easter = calcEaster(year);
-  const ash = calcAshWednesday(year);
+// ============================================================
+// REPORT
+// ============================================================
 
-  const grandTotal = donations.reduce((sum, d) => sum + d.amount, 0);
-  const daysSet = new Set(donations.map(d => d.date));
+let reportCollettaId = null;
+
+function renderReport() {
+  const collette = getCollette();
+  if (collette.length === 0) {
+    document.getElementById('reportSelect').innerHTML = '';
+    document.getElementById('reportContent').innerHTML = `<div class="empty-state"><span class="empty-icon">🌷</span>Crea prima una colletta</div>`;
+    return;
+  }
+  if (!reportCollettaId || !collette.find(c => c.id === reportCollettaId)) {
+    reportCollettaId = collette[0].id;
+  }
+
+  document.getElementById('reportSelect').innerHTML = collette.map(c =>
+    `<button class="filter-btn ${reportCollettaId===c.id?'active':''}" onclick="setReportColletta('${c.id}')">${c.emoji||''} ${c.name}</button>`
+  ).join('');
+
+  const c = collette.find(x => x.id === reportCollettaId);
+  const donations = getDonations().filter(d => d.collettaId === reportCollettaId);
+  const { start, end } = getCollettaDates(c);
+
+  const grandTotal = donations.reduce((s,d)=>s+d.amount,0);
+  const daysSet = new Set(donations.map(d=>d.date));
   const giorni = daysSet.size;
   const nDons = donations.length;
-  const media = giorni > 0 ? grandTotal / giorni : 0;
+  const media = giorni > 0 ? grandTotal/giorni : 0;
 
   const byDay = {};
+  donations.forEach(d => { byDay[d.date] = (byDay[d.date]||0)+d.amount; });
+  const byWeek = {};
   donations.forEach(d => {
-    if (!byDay[d.date]) byDay[d.date] = 0;
-    byDay[d.date] += d.amount;
+    const dt = new Date(d.date);
+    const weekStart = new Date(dt); weekStart.setDate(dt.getDate()-dt.getDay());
+    const wk = dateStr(weekStart);
+    byWeek[wk] = (byWeek[wk]||0)+d.amount;
   });
-  const maxDay = Object.entries(byDay).sort((a,b) => b[1]-a[1])[0];
+  const maxDay = Object.entries(byDay).sort((a,b)=>b[1]-a[1])[0];
+  const maxWeek = Object.entries(byWeek).sort((a,b)=>b[1]-a[1])[0];
 
-  const easterStr = easter.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
-  const ashStr = ash.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+  const typeLabel = c.type==='quaresima_romana' ? 'Quaresima Romana' :
+                    c.type==='quaresima_ambrosiana' ? 'Quaresima Ambrosiana' : 'Colletta';
+  const symbol = c.type==='libera' ? '🏦' : '✟';
+  const printDate = new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
 
-  const now = new Date();
-  const printDate = now.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
-
-  document.getElementById('reportSection').innerHTML = `
-    <div class="report-card">
-      <div class="report-title">✟ Tallone di Pasqua ${year} ✟</div>
-      <div class="report-subtitle">Quaresima ${ashStr} — ${easterStr}</div>
-
+  document.getElementById('reportContent').innerHTML = `
+    <div class="report-card" data-symbol="${symbol}">
+      <div class="report-title">${c.emoji||symbol} ${c.name}</div>
+      <div class="report-subtitle">${typeLabel} · ${formatDateLong(start)} – ${formatDateLong(end)}</div>
       <div class="report-amount">€ ${formatEuro(grandTotal)}</div>
       <div class="report-desc">
-        Con ${nDons} offert${nDons===1?'a':'e'} in ${giorni} giorn${giorni===1?'o':'i'} di cammino quaresimale,<br>
-        hai testimoniato la carità cristiana.
+        ${nDons} offert${nDons===1?'a':'e'} in ${giorni} giorn${giorni===1?'o':'i'} di cammino.
       </div>
-
       <div class="report-stats">
-        <div class="report-stat">
-          <span class="report-stat-val">${nDons}</span>
-          <span class="report-stat-lbl">Offerte totali</span>
-        </div>
-        <div class="report-stat">
-          <span class="report-stat-val">${giorni}</span>
-          <span class="report-stat-lbl">Giorni</span>
-        </div>
-        <div class="report-stat">
-          <span class="report-stat-val">€${formatEuro(media)}</span>
-          <span class="report-stat-lbl">Media/giorno</span>
-        </div>
+        <div><span class="report-stat-val">${nDons}</span><span class="report-stat-lbl">Offerte</span></div>
+        <div><span class="report-stat-val">${giorni}</span><span class="report-stat-lbl">Giorni</span></div>
+        <div><span class="report-stat-val">€${formatEuro(media)}</span><span class="report-stat-lbl">Media/g</span></div>
       </div>
-
-      ${maxDay ? `<div style="font-family:'IM Fell English',serif;font-style:italic;font-size:13px;color:var(--testo-soft);margin-bottom:16px;">
-        Giorno più generoso: ${formatDate(maxDay[0])} (€ ${formatEuro(maxDay[1])})
-      </div>` : ''}
-
-      <div style="font-size:11px;color:rgba(201,162,39,0.5);margin-bottom:16px;">
-        Stampato il ${printDate}
-      </div>
-
-      <button class="share-btn" onclick="printReport()">🖨 Stampa / Salva il tallone</button>
-      <button class="share-btn" style="margin-top:8px;background:linear-gradient(135deg,#2d5a27,#1a3a15);border-color:var(--verde-palma);color:#90c878;" onclick="copyReport()">📋 Copia riepilogo</button>
+      ${maxDay ? `<div style="font-family:'IM Fell English',serif;font-style:italic;font-size:12px;color:var(--testo-soft);margin-bottom:6px;">
+        🗓 Giorno più generoso: ${formatDate(maxDay[0])} — €${formatEuro(maxDay[1])}</div>` : ''}
+      ${maxWeek ? `<div style="font-family:'IM Fell English',serif;font-style:italic;font-size:12px;color:var(--testo-soft);margin-bottom:14px;">
+        📅 Settimana top: ${formatDateShort(maxWeek[0])} — €${formatEuro(maxWeek[1])}</div>` : ''}
+      <div style="font-size:10px;color:rgba(201,162,39,0.4);margin-bottom:14px;">Generato il ${printDate}</div>
+      <button class="share-btn" onclick="window.print()">🖨 Stampa / Salva il tallone</button>
+      <button class="share-btn" style="margin-top:6px;background:linear-gradient(135deg,#2d5a27,#1a3a15);border-color:#2d5a27;color:#90c878;" onclick="copyReport()">📋 Copia riepilogo testo</button>
     </div>
   `;
 }
 
-// =====================
-// AZIONI
-// =====================
+function setReportColletta(id) {
+  reportCollettaId = id;
+  renderReport();
+}
+
+function copyReport() {
+  const collette = getCollette();
+  const c = collette.find(x => x.id === reportCollettaId);
+  if (!c) return;
+  const donations = getDonations().filter(d => d.collettaId === reportCollettaId);
+  const { start, end } = getCollettaDates(c);
+  const grandTotal = donations.reduce((s,d)=>s+d.amount,0);
+  const daysSet = new Set(donations.map(d=>d.date));
+  const text = `${c.emoji||'✟'} ${c.name.toUpperCase()}\n${formatDateLong(start)} — ${formatDateLong(end)}\n\nTotale: € ${formatEuro(grandTotal)}\nOfferte: ${donations.length}\nGiorni: ${daysSet.size}\n\n— Salvadanaio Digitale`;
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(()=>showToast('📋 Copiato!'));
+  else prompt('Copia:', text);
+}
+
+// ============================================================
+// AZIONI OFFERTE
+// ============================================================
 
 function addDonation(amount) {
+  if (!activeCollettaId) return;
+  const d = { id: Date.now().toString(), collettaId: activeCollettaId, amount: Number(amount), date: todayStr(), ts: new Date().toISOString() };
   const donations = getDonations();
-  const now = new Date();
-  const donation = {
-    id: Date.now().toString(),
-    amount: Number(amount),
-    date: todayStr(),
-    ts: now.toISOString()
-  };
-  donations.push(donation);
+  donations.push(d);
   saveDonations(donations);
-  renderAll();
-  showToast(`✟ Offerta di € ${formatEuro(amount)} registrata`);
+  openColletta(activeCollettaId); // refresh vista
+  renderDashboard();
+  showToast(`✓ € ${formatEuro(amount)} registrat${amount===1?'a':'i'}`);
 }
 
 function deleteDonation(id) {
-  const donations = getDonations().filter(d => d.id !== id);
-  saveDonations(donations);
-  renderAll();
+  saveDonations(getDonations().filter(d => d.id !== id));
+  openColletta(activeCollettaId);
+  renderDashboard();
 }
 
-// =====================
+// ============================================================
+// GESTIONE COLLETTE
+// ============================================================
+
+let selectedEmoji = '✟';
+
+function openNewColletta() {
+  editingCollettaId = null;
+  selectedEmoji = '✟';
+  document.getElementById('nc_name').value = '';
+  document.getElementById('nc_type').value = 'quaresima_romana';
+  document.getElementById('nc_year').value = new Date().getFullYear();
+  document.getElementById('nc_start').value = todayStr();
+  const endDef = new Date(); endDef.setDate(endDef.getDate()+40);
+  document.getElementById('nc_end').value = dateStr(endDef);
+  document.getElementById('newCollettaTitle').textContent = '✟ Nuova Colletta';
+  onTypeChange();
+  renderEmojiGrid();
+  document.getElementById('newCollettaOverlay').classList.add('open');
+}
+
+function renderEmojiGrid() {
+  document.getElementById('emojiGrid').innerHTML = EMOJIS.map(e =>
+    `<div class="emoji-opt ${e===selectedEmoji?'selected':''}" onclick="selectEmoji('${e}')">${e}</div>`
+  ).join('');
+}
+
+function selectEmoji(e) {
+  selectedEmoji = e;
+  renderEmojiGrid();
+}
+
+function onTypeChange() {
+  const type = document.getElementById('nc_type').value;
+  document.getElementById('nc_year_wrap').style.display = type==='libera' ? 'none' : 'block';
+  document.getElementById('nc_dates_wrap').style.display = type==='libera' ? 'block' : 'none';
+}
+
+function saveNewColletta() {
+  const name = document.getElementById('nc_name').value.trim();
+  if (!name) { showToast('❌ Inserisci un nome'); return; }
+  const type = document.getElementById('nc_type').value;
+  const year = parseInt(document.getElementById('nc_year').value) || new Date().getFullYear();
+  const startDate = document.getElementById('nc_start').value;
+  const endDate = document.getElementById('nc_end').value;
+
+  const collette = getCollette();
+
+  if (editingCollettaId) {
+    const idx = collette.findIndex(c => c.id === editingCollettaId);
+    if (idx >= 0) {
+      collette[idx] = { ...collette[idx], name, type, year, startDate, endDate, emoji: selectedEmoji };
+    }
+    showToast('✓ Colletta aggiornata');
+  } else {
+    const newC = { id: Date.now().toString(), name, type, year, startDate, endDate, emoji: selectedEmoji };
+    collette.push(newC);
+    showToast('✓ Colletta creata!');
+  }
+
+  saveCollette(collette);
+  closeModal('newCollettaOverlay');
+  renderDashboard();
+}
+
+// ============================================================
+// IMPOSTAZIONI
+// ============================================================
+
+function openSettings() {
+  const amounts = getAmounts();
+  document.getElementById('amountInputs').innerHTML = amounts.map((amt, i) => `
+    <div class="amount-input-wrap">
+      <label>Importo ${i+1}</label>
+      <span class="euro-prefix">€</span>
+      <input type="number" class="amount-input" id="amt${i}" value="${amt}" min="0.01" step="0.01">
+    </div>`).join('');
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+
+function saveSettings() {
+  const amounts = getAmounts().map((_,i) => {
+    const v = parseFloat(document.getElementById('amt'+i)?.value||'0');
+    return v > 0 ? v : getAmounts()[i];
+  });
+  saveSettingsData({ ...getSettings(), amounts });
+  closeModal('settingsOverlay');
+  if (activeCollettaId) renderAmountsGrid();
+  showToast('✓ Impostazioni salvate');
+}
+
+function confirmReset() {
+  if (confirm('Cancellare TUTTI i dati? Questa azione non è reversibile.')) {
+    ['sdg_donations','sdg_collette','sdg_settings'].forEach(k => localStorage.removeItem(k));
+    activeCollettaId = null;
+    closeModal('settingsOverlay');
+    showMainView('dashboard', document.getElementById('nav-dashboard'));
+    renderDashboard();
+    showToast('🗑 Dati cancellati');
+  }
+}
+
+// ============================================================
 // ESPORTA / IMPORTA
-// =====================
+// ============================================================
 
 function exportData() {
   const data = {
-    version: 1,
+    version: 2,
     exportDate: new Date().toISOString(),
+    collette: getCollette(),
     donations: getDonations(),
     settings: getSettings()
   };
-  const json = JSON.stringify(data, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `quaresima-${new Date().getFullYear()}-backup.json`;
-  a.click();
+  a.href = url; a.download = `salvadanaio-backup-${todayStr()}.json`; a.click();
   URL.revokeObjectURL(url);
   showToast('📤 File esportato!');
 }
 
 function showRawData() {
-  const data = {
-    version: 1,
-    exportDate: new Date().toISOString(),
-    donations: getDonations(),
-    settings: getSettings()
-  };
+  const data = { version:2, exportDate:new Date().toISOString(), collette:getCollette(), donations:getDonations(), settings:getSettings() };
   const json = JSON.stringify(data);
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(json).then(() => showToast('📋 Dati copiati! Incollali nell\'altra app'));
-  } else {
-    prompt('Copia tutto questo testo:', json);
-  }
+  if (navigator.clipboard) navigator.clipboard.writeText(json).then(()=>showToast('📋 Dati copiati!'));
+  else prompt('Copia:', json);
 }
 
 function togglePasteArea() {
-  const area = document.getElementById('pasteArea');
-  const btn = document.getElementById('pasteConfirmBtn');
-  const visible = area.style.display === 'block';
-  area.style.display = visible ? 'none' : 'block';
-  if (visible) btn.style.display = 'none';
-  else area.focus();
+  const a = document.getElementById('pasteArea');
+  const visible = a.style.display==='block';
+  a.style.display = visible ? 'none' : 'block';
+  document.getElementById('pasteConfirmBtn').style.display = 'none';
+  if (!visible) a.focus();
 }
 
 function pasteImport() {
-  const text = document.getElementById('pasteArea').value.trim();
-  if (!text) return;
   try {
-    const data = JSON.parse(text);
-    if (!data.donations || !Array.isArray(data.donations)) {
-      showToast('❌ Testo non valido'); return;
-    }
-    const existing = getDonations();
-    const existingIds = new Set(existing.map(d => d.id));
-    const newDons = data.donations.filter(d => !existingIds.has(d.id));
-    saveDonations([...existing, ...newDons]);
-    if (data.settings) saveSettingsData(data.settings);
-    document.getElementById('pasteArea').value = '';
-    document.getElementById('pasteArea').style.display = 'none';
-    document.getElementById('pasteConfirmBtn').style.display = 'none';
-    renderAll();
-    closeSettings();
-    showToast(`✓ Importate ${newDons.length} offerte!`);
-  } catch {
-    showToast('❌ Errore nel testo incollato');
-  }
+    const data = JSON.parse(document.getElementById('pasteArea').value.trim());
+    pendingImportData = data;
+    pendingImportCleanup = () => {
+      document.getElementById('pasteArea').value='';
+      document.getElementById('pasteArea').style.display='none';
+      document.getElementById('pasteConfirmBtn').style.display='none';
+    };
+    askImportMode();
+  } catch { showToast('❌ Testo non valido'); }
 }
 
 function importData(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = e => {
     try {
-      const data = JSON.parse(e.target.result);
-      if (!data.donations || !Array.isArray(data.donations)) {
-        showToast('❌ File non valido');
-        return;
-      }
-      // Unisci le donazioni senza duplicati (per id)
-      const existing = getDonations();
-      const existingIds = new Set(existing.map(d => d.id));
-      const newDons = data.donations.filter(d => !existingIds.has(d.id));
-      const merged = [...existing, ...newDons];
-      saveDonations(merged);
-      if (data.settings) saveSettingsData(data.settings);
-      renderAll();
-      closeSettings();
-      showToast(`✓ Importate ${newDons.length} offerte!`);
-    } catch {
-      showToast('❌ Errore nel file');
-    }
-    event.target.value = '';
+      pendingImportData = JSON.parse(e.target.result);
+      pendingImportCleanup = () => { event.target.value = ''; };
+      askImportMode();
+    } catch { showToast('❌ File non valido'); event.target.value=''; }
   };
   reader.readAsText(file);
 }
 
-// =====================
-// SETTINGS
-// =====================
+// Dati in attesa di essere importati
+let pendingImportData = null;
+let pendingImportCleanup = null;
 
-function openSettings() {
-  const s = getSettings();
-  const inputs = document.getElementById('amountInputs');
-  inputs.innerHTML = s.amounts.map((amt, i) => `
-    <div class="amount-input-wrap">
-      <label>Importo ${i+1}</label>
-      <span class="euro-prefix">€</span>
-      <input type="number" class="amount-input" id="amt${i}" value="${amt}" min="0.01" step="0.01">
-    </div>
-  `).join('');
-  document.getElementById('settingYear').value = s.year;
+function askImportMode() {
+  // Se non ci sono dati locali, importa direttamente in modalità merge
+  const hasDonations = getDonations().length > 0;
+  const hasCollette = getCollette().length > 0;
+  if (!hasDonations && !hasCollette) {
+    confirmImport('merge');
+    return;
+  }
+  closeModal('settingsOverlay');
+  document.getElementById('importChoiceOverlay').classList.add('open');
+}
+
+function confirmImport(mode) {
+  closeModal('importChoiceOverlay');
+  if (!pendingImportData) return;
+  if (pendingImportCleanup) pendingImportCleanup();
+  doImport(pendingImportData, mode);
+  pendingImportData = null;
+  pendingImportCleanup = null;
+}
+
+function cancelImport() {
+  closeModal('importChoiceOverlay');
+  if (pendingImportCleanup) pendingImportCleanup();
+  pendingImportData = null;
+  pendingImportCleanup = null;
   document.getElementById('settingsOverlay').classList.add('open');
 }
 
-function closeSettingsOutside(e) {
-  if (e.target === document.getElementById('settingsOverlay')) closeSettings();
-}
+function doImport(data, mode) {
+  // mode: 'merge' (somma) | 'replace' (sostituisce tutto)
 
-function closeSettings() {
-  document.getElementById('settingsOverlay').classList.remove('open');
-}
+  // Supporta v1 (vecchio formato)
+  if (data.version === 1 || (!data.collette && data.donations)) {
+    const s = data.settings || {};
+    const year = s.year || new Date().getFullYear();
 
-function saveSettings() {
-  const s = getSettings();
-  const newAmounts = s.amounts.map((_, i) => {
-    const v = parseFloat(document.getElementById('amt' + i)?.value || '0');
-    return v > 0 ? v : s.amounts[i];
-  });
-  const year = parseInt(document.getElementById('settingYear').value) || s.year;
-  saveSettingsData({ amounts: newAmounts, year });
-  closeSettings();
-  renderAll();
-  showToast('✓ Impostazioni salvate');
-}
+    let collette = mode === 'replace' ? [] : getCollette();
+    let migColletta = collette.find(c => c.id === 'migrated_'+year || c.name === 'Quaresima '+year);
+    if (!migColletta) {
+      migColletta = { id: 'migrated_'+year, name: 'Quaresima '+year, type: 'quaresima_romana', year, emoji: '✟' };
+      collette.push(migColletta);
+    }
+    saveCollette(collette);
 
-function confirmReset() {
-  if (confirm('Cancellare TUTTI i dati della Quaresima? Questa azione non è reversibile.')) {
-    localStorage.removeItem('quaresima_donations');
-    closeSettings();
-    renderAll();
-    showToast('🗑 Dati cancellati');
+    const existing = mode === 'replace' ? [] : getDonations();
+    const existingIds = new Set(existing.map(d=>d.id));
+    const newDons = (data.donations||[]).filter(d=>!existingIds.has(d.id)).map(d=>({...d, collettaId: migColletta.id}));
+    saveDonations([...existing, ...newDons]);
+
+    if (data.settings) saveSettingsData({...getSettings(), amounts: data.settings.amounts||getAmounts()});
+    renderDashboard();
+    const modeLabel = mode==='replace' ? 'Sostituzione completata' : 'Somma completata';
+    showToast(`✓ ${modeLabel}: ${newDons.length} offerte`);
+    return;
+  }
+
+  if (!data.donations) { showToast('❌ File non valido'); return; }
+
+  if (mode === 'replace') {
+    // Sostituisce tutto
+    saveCollette(data.collette || []);
+    saveDonations(data.donations || []);
+    if (data.settings) saveSettingsData({...getSettings(), ...data.settings});
+    renderDashboard();
+    showToast(`✓ Sostituzione: ${(data.donations||[]).length} offerte, ${(data.collette||[]).length} collette`);
+  } else {
+    // Somma (merge): aggiunge solo ciò che non c'è già
+    const existingCollIds = new Set(getCollette().map(c=>c.id));
+    const newColl = (data.collette||[]).filter(c=>!existingCollIds.has(c.id));
+    saveCollette([...getCollette(), ...newColl]);
+
+    const existingIds = new Set(getDonations().map(d=>d.id));
+    const newDons = (data.donations||[]).filter(d=>!existingIds.has(d.id));
+    saveDonations([...getDonations(), ...newDons]);
+
+    if (data.settings) saveSettingsData({...getSettings(), amounts: data.settings.amounts||getAmounts()});
+    renderDashboard();
+    showToast(`✓ Somma: +${newDons.length} offerte, +${newColl.length} collette`);
   }
 }
 
-// =====================
-// VISTE
-// =====================
+// ============================================================
+// RECUPERO FORZATO
+// ============================================================
 
-function showView(name, btn) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+function openRecuperoForzato() {
+  const collette = getCollette();
+  if (collette.length === 0) {
+    showToast('❌ Crea prima una colletta');
+    return;
+  }
+  // Popola select collette
+  document.getElementById('rec_colletta').innerHTML = collette.map(c =>
+    `<option value="${c.id}">${c.emoji||''} ${c.name}</option>`
+  ).join('');
+  // Data default: ieri
+  const ieri = new Date(); ieri.setDate(ieri.getDate()-1);
+  document.getElementById('rec_date').value = dateStr(ieri);
+  document.getElementById('rec_amount').value = '';
+  document.getElementById('rec_count').value = '';
+  closeModal('settingsOverlay');
+  document.getElementById('recuperoOverlay').classList.add('open');
+}
+
+function eseguiRecuperoForzato() {
+  const collettaId = document.getElementById('rec_colletta').value;
+  const dataVal = document.getElementById('rec_date').value;
+  const amountVal = parseFloat(document.getElementById('rec_amount').value);
+  const countVal = parseInt(document.getElementById('rec_count').value) || 1;
+
+  if (!collettaId) { showToast('❌ Seleziona una colletta'); return; }
+  if (!dataVal) { showToast('❌ Inserisci una data'); return; }
+  if (!amountVal || amountVal <= 0) { showToast('❌ Inserisci un importo valido'); return; }
+
+  const donations = getDonations();
+  const singolo = amountVal / countVal;
+  const baseTs = new Date(dataVal + 'T12:00:00');
+
+  for (let i = 0; i < countVal; i++) {
+    const ts = new Date(baseTs.getTime() + i * 60000); // 1 minuto di distanza tra voci
+    donations.push({
+      id: 'recupero_' + Date.now() + '_' + i,
+      collettaId,
+      amount: Math.round(singolo * 100) / 100,
+      date: dataVal,
+      ts: ts.toISOString(),
+      note: 'Recupero forzato'
+    });
+  }
+
+  saveDonations(donations);
+  closeModal('recuperoOverlay');
+  renderDashboard();
+  if (activeCollettaId === collettaId) openColletta(collettaId);
+  showToast(`✓ Aggiunte ${countVal} offerte per € ${formatEuro(amountVal)}`);
+}
+
+// ============================================================
+// NAVIGAZIONE VISTE
+// ============================================================
+
+function showMainView(name, btn) {
+  document.querySelectorAll('.main-view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('view-' + name).classList.add('active');
-  btn.classList.add('active');
-
-  if (name === 'history') renderHistory();
+  document.getElementById('view-'+name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  // Aggiorna nav highlight per colletta (usa dashboard come attiva)
+  if (name === 'colletta') {
+    document.getElementById('nav-dashboard').classList.add('active');
+  }
+  if (name === 'storico') renderStorico();
   if (name === 'report') renderReport();
 }
 
-// =====================
-// REPORT
-// =====================
+// ============================================================
+// MODALI
+// ============================================================
 
-function printReport() {
-  window.print();
-}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModalOutside(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
 
-function copyReport() {
-  const donations = getDonations();
-  const s = getSettings();
-  const grandTotal = donations.reduce((sum, d) => sum + d.amount, 0);
-  const daysSet = new Set(donations.map(d => d.date));
-  const easter = calcEaster(s.year);
-  const easterStr = easter.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
-
-  const text = `✟ TALLONE DI PASQUA ${s.year} ✟\n\nOfferte Quaresimali\nPasqua: ${easterStr}\n\nTotale: € ${formatEuro(grandTotal)}\nNumero offerte: ${donations.length}\nGiorni di carità: ${daysSet.size}\n\nAd maiorem Dei gloriam`;
-
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => showToast('📋 Copiato!'));
-  } else {
-    prompt('Copia questo testo:', text);
-  }
-}
-
-// =====================
+// ============================================================
 // TOAST
-// =====================
+// ============================================================
 
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
-// =====================
+// ============================================================
 // INIT
-// =====================
+// ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Se non ci sono impostazioni, setta l'anno corrente come default
-  const s = getSettings();
-  if (!localStorage.getItem('quaresima_settings')) {
-    saveSettingsData({ amounts: [1, 2, 5, 10], year: new Date().getFullYear() });
+  // Migrazione da vecchio formato (chiavi quaresima_*)
+  if (localStorage.getItem('quaresima_donations') && !localStorage.getItem('sdg_collette')) {
+    try {
+      const oldDons = JSON.parse(localStorage.getItem('quaresima_donations')||'[]');
+      const oldSett = JSON.parse(localStorage.getItem('quaresima_settings')||'{}');
+      const year = oldSett.year || new Date().getFullYear();
+      const migC = { id: 'migrated_'+year, name: 'Quaresima '+year, type: 'quaresima_romana', year, emoji: '✟' };
+      saveCollette([migC]);
+      saveDonations(oldDons.map(d=>({...d, collettaId: migC.id})));
+      if (oldSett.amounts) saveSettingsData({ amounts: oldSett.amounts });
+      showToast('✓ Dati precedenti importati!');
+    } catch(e) { console.warn('Migrazione fallita', e); }
   }
-  renderAll();
 
-  // Aggiorna data ogni minuto
+  renderHeader();
+  renderDashboard();
   setInterval(renderHeader, 60000);
 
-  // Listener textarea incolla
   document.getElementById('pasteArea').addEventListener('input', function() {
     document.getElementById('pasteConfirmBtn').style.display = this.value.trim() ? 'block' : 'none';
   });
